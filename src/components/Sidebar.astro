@@ -1,0 +1,16 @@
+---
+/**
+ * Barra laterale condivisa: menu del sito in cima, più eventuale
+ * contenuto specifico della pagina passato via slot (es. la scheda
+ * "Informazioni" nella pagina di un brano). Stile in .barra-laterale,
+ * global.css.
+ */
+import MenuSito from './MenuSito.astro';
+import SelettoreTemi from './SelettoreTemi.astro';
+---
+
+<aside class="barra-laterale no-stampa" aria-label="Menu del sito">
+  <MenuSito />
+  <SelettoreTemi />
+  <slot />
+</aside>

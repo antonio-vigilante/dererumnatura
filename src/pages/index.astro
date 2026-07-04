@@ -1,32 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
 
 const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
   (a, b) => a.data.ordine - b.data.ordine
 );
-
-const sezioni = [
-  { id: 'presentazione', titolo: 'Presentazione' },
-  { id: 'il-poema',      titolo: 'Il poema' },
-  { id: 'edizione',      titolo: 'Questa edizione' },
-  { id: 'come-leggere',  titolo: 'Come leggere' },
-  { id: 'crediti',       titolo: 'Crediti e ringraziamenti' },
-];
 ---
 
 <BaseLayout titolo="Frontespizio" descrizione="Un'edizione digitale ad accesso aperto del De rerum natura di Lucrezio.">
-  <div class="home-wrap contenitore">
+  <div class="contenitore layout-menu">
 
-    {/* ---- Sommario laterale ---- */}
-    <nav class="sommario no-stampa" aria-label="Sommario della homepage">
-      <p class="som-titolo maiuscoletto tenue">In questa pagina</p>
-      <ol>
-        {sezioni.map((s) => (
-          <li><a href={`#${s.id}`}>{s.titolo}</a></li>
-        ))}
-      </ol>
-    </nav>
+    <Sidebar />
 
     {/* ---- Corpo della homepage ---- */}
     <article class="corpo">
@@ -45,33 +30,15 @@ const sezioni = [
       <section id="presentazione">
         <h2>Presentazione</h2>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-          ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
-        </p>
-        <p>
-          Duis aute irure dolor in reprehenderit in voluptate velit esse
-          cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-          cupidatat non proident, sunt in culpa qui officia deserunt mollit
-          anim id est laborum.
-        </p>
-      </section>
+          Questo sito intende offrire un’edizione con licenza aperta del <em>De rerum natura</em> di Lucrezio, con l’edizione critica del testo latino di Cyril Bailey e la traduzione in endecasillabi, un'Introduzione, una Guida alla lettura e le note di Antonio Vigilante.
+            </section>
 
 
       {/* ==================================================== IL POEMA */}
       <section id="il-poema">
         <h2>Il poema</h2>
         <p>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-          quae ab illo inventore veritatis et quasi architecto beatae vitae
-          dicta sunt explicabo.
-        </p>
-        <p>
-          Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit
-          aut fugit, sed quia consequuntur magni dolores eos qui ratione
-          voluptatem sequi nesciunt.
+          Il <em>De rerum natura</em> è uno dei capolavori della poesia e del pensiero 
         </p>
       </section>
 
@@ -129,76 +96,7 @@ const sezioni = [
   </div>
 </BaseLayout>
 
-<script is:inline>
-  /* Evidenzia la voce attiva nel sommario laterale mentre si scorre. */
-  (function () {
-    const sezioni = document.querySelectorAll('article section[id]');
-    const voci = document.querySelectorAll('.sommario a');
-    if (!sezioni.length || !voci.length) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            voci.forEach((v) => v.classList.remove('attiva'));
-            const corr = document.querySelector(`.sommario a[href="#${e.target.id}"]`);
-            if (corr) corr.classList.add('attiva');
-          }
-        }
-      },
-      { rootMargin: '-20% 0px -70% 0px' }
-    );
-    sezioni.forEach((s) => io.observe(s));
-  })();
-</script>
-
 <style>
-  /* ---- Layout a due colonne ---- */
-  .home-wrap {
-    display: grid;
-    grid-template-columns: 14rem 1fr;
-    gap: 3.5rem;
-    align-items: start;
-    padding-block: 2.5rem;
-  }
-  @media (max-width: 800px) {
-    .home-wrap { grid-template-columns: 1fr; }
-    .corpo { order: 1; }
-    .sommario { order: 2; position: static; margin-top: 3rem; }
-  }
-
-  /* ---- Sommario laterale sticky ---- */
-  .sommario {
-    position: sticky;
-    top: 5rem;
-    padding: 1.2rem;
-    border: 1px solid var(--linea);
-    border-radius: 6px;
-    background: var(--carta-alt);
-    font-size: 0.9rem;
-  }
-  .som-titolo { margin: 0 0 0.7rem; font-size: 0.72rem; }
-  .sommario ol {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-  }
-  .sommario a {
-    display: block;
-    text-decoration: none;
-    color: var(--inchiostro-tenue);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    border-left: 2px solid transparent;
-    transition: all 0.15s ease;
-    line-height: 1.35;
-  }
-  .sommario a:hover { color: var(--inchiostro); background: var(--evidenzia); }
-  .sommario a.attiva { color: var(--rubrica); border-left-color: var(--oro); background: var(--evidenzia); }
-
   /* ---- Corpo ---- */
   .corpo { max-width: 52rem; }
 
@@ -206,32 +104,36 @@ const sezioni = [
   .testata-home { text-align: center; margin-bottom: 0; }
   .epigrafe { font-size: 0.95rem; letter-spacing: 0.15em; }
   .testata-home h1 {
-    font-size: clamp(2.6rem, 7vw, 4.5rem);
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.3rem, 6.2vw, 3.9rem);
+    font-weight: 500;
+    text-transform: uppercase;
     margin: 0.4rem 0 0;
     color: var(--rubrica);
-    letter-spacing: 0.01em;
+    letter-spacing: 0.03em;
   }
   .sottotitolo {
-    font-style: italic;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 500;
     color: var(--inchiostro-tenue);
     margin-top: 0.3rem;
   }
   .entra {
     display: inline-block;
     margin-top: 1.2rem;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem;
-    font-variant: small-caps;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
     letter-spacing: 0.05em;
     text-decoration: none;
-    border: 1px solid var(--oro);
-    padding: 0.5rem 1.6rem;
+    background: var(--rubrica);
+    border: 1.5px solid var(--rubrica);
+    padding: 0.6rem 1.8rem;
     border-radius: 4px;
-    color: var(--rubrica);
-    transition: all 0.25s ease;
+    color: var(--carta);
+    transition: all 0.2s ease;
   }
-  .entra:hover { background: var(--oro); color: var(--carta); }
+  .entra:hover { background: var(--rubrica-scura); border-color: var(--rubrica-scura); }
 
   section {
     margin-top: 3rem;

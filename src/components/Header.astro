@@ -1,15 +1,4 @@
 ---
-const percorso = Astro.url.pathname;
-const voci = [
-  { href: '/', etichetta: 'Frontespizio' },
-  { href: '/indice/', etichetta: 'Indice' },
-  { href: '/glossario/', etichetta: 'Glossario' },
-  { href: '/bibliografia/', etichetta: 'Bibliografia' },
-  { href: '/cerca/', etichetta: 'Cerca' },
-  { href: '/guida/', etichetta: 'Guida' },
-];
-const attiva = (href: string) =>
-  href === '/' ? percorso === '/' : percorso.startsWith(href);
 ---
 
 <header class="sito no-stampa">
@@ -19,54 +8,34 @@ const attiva = (href: string) =>
     </a>
 
     <button class="hamburger" id="hamburger"
-      aria-label="Apri menu" aria-expanded="false" aria-controls="menu-nav">
+      aria-label="Apri il menu" aria-expanded="false" aria-controls="menu-sito">
       <span></span>
       <span></span>
       <span></span>
     </button>
 
-    <div class="menu-wrap" id="menu-nav">
-      <nav class="nav" aria-label="Navigazione principale">
-        {voci.map((v) => (
-          <a href={v.href} class:list={['nav-voce', { attiva: attiva(v.href) }]}>
-            {v.etichetta}
-          </a>
-        ))}
-      </nav>
-
-      <div class="temi" role="group" aria-label="Tema di lettura">
-        <button data-tema="papiro" title="Papiro" aria-label="Tema papiro">☼</button>
-        <button data-tema="sepia" title="Sepia" aria-label="Tema sepia">◑</button>
-        <button data-tema="notte" title="Notte" aria-label="Tema notte">☾</button>
-      </div>
-    </div>
+    <p class="segnaposto tenue">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
+    </p>
   </div>
 </header>
 
 <script is:inline>
   (function () {
-    const btn  = document.getElementById('hamburger');
-    const menu = document.getElementById('menu-nav');
-    if (!btn || !menu) return;
+    const btn = document.getElementById('hamburger');
+    if (!btn) return;
 
     btn.addEventListener('click', function () {
-      var aperto = menu.classList.contains('aperto');
-      menu.classList.toggle('aperto', !aperto);
-      btn.setAttribute('aria-expanded', String(!aperto));
-    });
-
-    menu.querySelectorAll('a').forEach(function (a) {
-      a.addEventListener('click', function () {
-        menu.classList.remove('aperto');
-        btn.setAttribute('aria-expanded', 'false');
-      });
+      const aperto = document.documentElement.classList.toggle('menu-aperto');
+      btn.setAttribute('aria-expanded', String(aperto));
     });
   })();
 </script>
 
 <style>
   header.sito {
-    border-bottom: 1px solid var(--linea);
+    border-bottom: 2px solid var(--linea);
     background: color-mix(in srgb, var(--carta) 92%, transparent);
     backdrop-filter: blur(6px);
     position: sticky;
@@ -84,18 +53,18 @@ const attiva = (href: string) =>
   .marca {
     display: flex;
     text-decoration: none;
-    margin-right: auto;
+    flex-shrink: 0;
   }
   .marca-titolo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
     color: var(--rubrica);
-    font-variant: small-caps;
-    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
 
-  /* Hamburger: nascosto su desktop */
+  /* Hamburger: nascosto su desktop, mostrato quando la sidebar collassa. */
   .hamburger {
     display: none;
     flex-direction: column;
@@ -105,7 +74,7 @@ const attiva = (href: string) =>
     height: 2.2rem;
     padding: 0.35rem 0.4rem;
     background: transparent;
-    border: 1px solid var(--linea);
+    border: 1.5px solid var(--linea);
     border-radius: 4px;
     cursor: pointer;
     flex-shrink: 0;
@@ -121,88 +90,20 @@ const attiva = (href: string) =>
   .hamburger[aria-expanded='true'] span:nth-child(2) { opacity: 0; }
   .hamburger[aria-expanded='true'] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-  /* Desktop: menu sempre visibile */
-  @media (min-width: 681px) {
-    .menu-wrap {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-  }
-
-  .nav {
-    display: flex;
-    gap: 1.1rem;
-  }
-  .nav-voce {
-    text-decoration: none;
+  .segnaposto {
+    flex: 1;
+    min-width: 0;
+    max-width: 24rem;
+    margin-left: auto;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    font-style: italic;
+    text-align: right;
     color: var(--inchiostro-tenue);
-    font-variant: small-caps;
-    letter-spacing: 0.05em;
-    padding-bottom: 2px;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-  }
-  .nav-voce:hover { color: var(--inchiostro); }
-  .nav-voce.attiva {
-    color: var(--rubrica);
-    border-bottom-color: var(--oro);
   }
 
-  .temi { display: flex; gap: 0.15rem; }
-  .temi button {
-    background: transparent;
-    border: 1px solid var(--linea);
-    color: var(--inchiostro-tenue);
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    line-height: 1;
-    transition: all 0.2s ease;
-  }
-  .temi button:hover { border-color: var(--oro); color: var(--inchiostro); }
-  .temi button[aria-pressed='true'] {
-    background: var(--oro);
-    color: var(--carta);
-    border-color: var(--oro);
-  }
-
-  /* ---- Mobile ----------------------------------------- */
-  @media (max-width: 680px) {
-    .hamburger {
-      display: flex;
-    }
-
-    /* Menu chiuso: nascosto */
-    .menu-wrap {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1.2rem;
-      padding: 1.2rem 4vw 1.5rem;
-      background: var(--carta);
-      border-bottom: 1px solid var(--linea);
-      box-shadow: 0 6px 16px var(--ombra);
-      z-index: 10;
-    }
-
-    /* Menu aperto */
-    .menu-wrap.aperto {
-      display: flex;
-    }
-
-    .nav {
-      flex-direction: column;
-      gap: 0.9rem;
-    }
-    .nav-voce {
-      font-size: 1.1rem;
-    }
+  @media (max-width: 800px) {
+    .hamburger { display: flex; }
+    .segnaposto { display: none; }
   }
 </style>

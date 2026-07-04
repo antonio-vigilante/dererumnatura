@@ -97,7 +97,7 @@ function conRichiami(testo: string): string {
   }
   .verso {
     display: grid;
-    grid-template-columns: 2.6rem 1fr;
+    grid-template-columns: minmax(2.6rem, auto) 1fr;
     align-items: baseline;
     gap: 0.4rem;
   }
@@ -108,6 +108,7 @@ function conRichiami(testo: string): string {
     color: var(--inchiostro-tenue);
     user-select: none;
     padding-top: 0.15em;
+    white-space: nowrap;
   }
   /* I numeri di riferimento latino nella colonna italiana:
      stesso layout, colore rubrica per distinguerli. */
@@ -119,12 +120,7 @@ function conRichiami(testo: string): string {
     display: block;
   }
   .versi[lang='la'] .riga {
-    font-size: 1.16rem;
-    /* EB Garamond include forme "localizzate" per il sistema OpenType
-       Latino classico (tag LAT), attivate di default dall'attributo
-       lang="la": sostituiscono u/U/v con varianti in stile epigrafico.
-       Le disattiviamo per mantenere la u leggibile normalmente. */
-    font-feature-settings: "locl" off;
+    font-size: 1.05rem;
   }
   :global(.rientro) { padding-left: 2.4rem; display: inline-block; }
 
@@ -141,7 +137,7 @@ function conRichiami(testo: string): string {
     list-style: none;
     margin: 1.5rem 0 0;
     padding: 0.6rem 0 0;
-    border-top: 1px solid var(--linea);
+    border-top: 2px solid var(--linea);
     font-size: 0.85rem;
     color: var(--inchiostro-tenue);
   }

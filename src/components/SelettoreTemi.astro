@@ -1,0 +1,36 @@
+---
+/**
+ * Selettore del tema di lettura (papiro/sepia/notte). Vive nella
+ * sidebar, sotto il menu: la logica di attivazione è nello script
+ * condiviso in BaseLayout.astro, che interroga .temi button[data-tema]
+ * ovunque si trovi nel documento.
+ */
+---
+
+<div class="temi" role="group" aria-label="Tema di lettura">
+  <button data-tema="papiro" title="Papiro" aria-label="Tema papiro">☼</button>
+  <button data-tema="sepia" title="Sepia" aria-label="Tema sepia">◑</button>
+  <button data-tema="notte" title="Notte" aria-label="Tema notte">☾</button>
+</div>
+
+<style>
+  .temi { display: flex; gap: 0.4rem; }
+  .temi button {
+    background: transparent;
+    border: 1.5px solid var(--linea);
+    color: var(--inchiostro-tenue);
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+  }
+  .temi button:hover { border-color: var(--oro); color: var(--inchiostro); }
+  .temi button[aria-pressed='true'] {
+    background: var(--oro);
+    color: var(--carta);
+    border-color: var(--oro);
+  }
+</style>

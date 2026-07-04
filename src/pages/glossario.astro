@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
 import { glossario } from '../data/glossario';
 
 const voci = [...glossario].sort((a, b) => a.termine.localeCompare(b.termine, 'it'));
@@ -12,7 +13,9 @@ const etichetteCat: Record<string, string> = {
 ---
 
 <BaseLayout titolo="Glossario">
-  <div class="contenitore glossario colonna-testo">
+  <div class="contenitore layout-menu">
+    <Sidebar />
+    <div class="glossario colonna-testo">
     <h1>Glossario epicureo</h1>
     <p class="tenue introd">
       Le parole-chiave del pensiero di Epicuro e di Lucrezio, con il termine greco
@@ -43,6 +46,7 @@ const etichetteCat: Record<string, string> = {
         </div>
       ))}
     </dl>
+    </div>
   </div>
 </BaseLayout>
 
@@ -63,22 +67,21 @@ const etichetteCat: Record<string, string> = {
 </script>
 
 <style>
-  .glossario { padding-block: 2.5rem; }
   h1 { text-align: center; }
   .introd { text-align: center; font-size: 1.05rem; }
 
   .filtri { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin-top: 1.2rem; }
   .filtri button {
     background: transparent;
-    border: 1px solid var(--linea);
+    border: 1.5px solid var(--linea);
     color: var(--inchiostro-tenue);
-    font-variant: small-caps;
+    text-transform: uppercase;
+    font-weight: 600;
     letter-spacing: 0.05em;
     padding: 0.3rem 0.9rem;
-    border-radius: 999px;
+    border-radius: 3px;
     cursor: pointer;
-    font-family: 'EB Garamond', serif;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
   .filtri button:hover { border-color: var(--oro); color: var(--inchiostro); }
   .filtri button[aria-pressed='true'] { background: var(--oro); color: var(--carta); border-color: var(--oro); }
@@ -95,7 +98,7 @@ const etichetteCat: Record<string, string> = {
     flex-wrap: wrap;
   }
   .termine {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.6rem;
     color: var(--rubrica);
   }
@@ -103,9 +106,9 @@ const etichetteCat: Record<string, string> = {
   .cat {
     margin-left: auto;
     font-size: 0.72rem;
-    border: 1px solid var(--linea);
+    border: 1.5px solid var(--linea);
     padding: 0.1rem 0.6rem;
-    border-radius: 999px;
+    border-radius: 3px;
   }
   dd { margin: 0.5rem 0 0; }
   .lat { margin: 0 0 0.4rem; font-size: 0.95rem; }

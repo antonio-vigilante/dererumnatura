@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
 import { bibliografia } from '../data/bibliografia';
 
 const voci = [...bibliografia].sort(
@@ -8,7 +9,9 @@ const voci = [...bibliografia].sort(
 ---
 
 <BaseLayout titolo="Bibliografia">
-  <div class="contenitore bibliografia colonna-testo">
+  <div class="contenitore layout-menu">
+    <Sidebar />
+    <div class="bibliografia colonna-testo">
     <h1>Bibliografia</h1>
     <p class="tenue introd">
       Opere citate nelle guide alla lettura, in ordine autore-data. Per rimandare
@@ -45,11 +48,11 @@ const voci = [...bibliografia].sort(
         </div>
       ))}
     </dl>
+    </div>
   </div>
 </BaseLayout>
 
 <style>
-  .bibliografia { padding-block: 2.5rem; }
   h1 { text-align: center; }
   .introd { text-align: center; font-size: 1.05rem; }
   .introd code { font-size: 0.9em; }
@@ -57,7 +60,7 @@ const voci = [...bibliografia].sort(
   .voci { margin: 0; }
   .voce {
     padding: 1.1rem 0;
-    border-bottom: 1px solid var(--linea);
+    border-bottom: 1.5px solid var(--linea);
     scroll-margin-top: 5rem;
   }
   .voce:target { background: var(--evidenzia); }
@@ -67,7 +70,7 @@ const voci = [...bibliografia].sort(
     gap: 0.6rem;
   }
   .autore {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.3rem;
   }
   .anno { font-variant-numeric: tabular-nums; }

@@ -1,36 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-const sezioni = [
-  { id: 'panoramica',   titolo: 'Panoramica' },
-  { id: 'avvio',        titolo: 'Primo avvio' },
-  { id: 'struttura',    titolo: 'Struttura del progetto' },
-  { id: 'aggiungere',   titolo: 'Aggiungere un brano' },
-  { id: 'frontmatter',  titolo: 'Riferimento frontmatter' },
-  { id: 'versi',        titolo: 'Formattare i versi' },
-  { id: 'note',         titolo: 'Note a piè di colonna' },
-  { id: 'guida-lettura','titolo': 'Guida alla lettura' },
-  { id: 'glossario',    titolo: 'Il Glossario' },
-  { id: 'temi',         titolo: 'Indice tematico' },
-  { id: 'grafica',      titolo: 'Personalizzare la grafica' },
-  { id: 'font',         titolo: 'Cambiare i font' },
-  { id: 'pubblicare',   titolo: 'Pubblicare il sito' },
-  { id: 'faq',          titolo: 'Problemi comuni' },
-];
+import Sidebar from '../components/Sidebar.astro';
 ---
 
 <BaseLayout titolo="Guida all'uso" descrizione="Come inserire i testi, modificare la grafica e adattare il template del De Rerum Natura.">
-  <div class="guida-wrap contenitore">
+  <div class="contenitore layout-menu">
 
-    {/* ---- Sommario laterale ---- */}
-    <nav class="sommario no-stampa" aria-label="Sommario della guida">
-      <p class="som-titolo maiuscoletto tenue">In questa pagina</p>
-      <ol>
-        {sezioni.map((s) => (
-          <li><a href={`#${s.id}`}>{s.titolo}</a></li>
-        ))}
-      </ol>
-    </nav>
+    <Sidebar />
 
     {/* ---- Corpo della guida ---- */}
     <article class="corpo">
@@ -742,8 +718,8 @@ Nota l'anafora di *te… te… tibi…*...
           <code>global.css</code>:
         </p>
         <ul>
-          <li><strong>Cormorant Garamond</strong> — titoli, tab, occhielli.</li>
-          <li><strong>EB Garamond</strong> — corpo del testo, versi.</li>
+          <li><strong>Playfair Display</strong> — titoli (serif, di contrasto).</li>
+          <li><strong>Work Sans</strong> — corpo del testo, versi, controlli (sans).</li>
         </ul>
         <p>
           Per sostituirli, modifica la riga <code>@import</code> con il font
@@ -912,75 +888,7 @@ body {
   </div>
 </BaseLayout>
 
-<script is:inline>
-  /* Evidenzia la voce attiva nel sommario laterale mentre si scorre. */
-  (function () {
-    const sezioni = document.querySelectorAll('article section[id]');
-    const voci = document.querySelectorAll('.sommario a');
-    if (!sezioni.length || !voci.length) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            voci.forEach((v) => v.classList.remove('attiva'));
-            const corr = document.querySelector(`.sommario a[href="#${e.target.id}"]`);
-            if (corr) corr.classList.add('attiva');
-          }
-        }
-      },
-      { rootMargin: '-20% 0px -70% 0px' }
-    );
-    sezioni.forEach((s) => io.observe(s));
-  })();
-</script>
-
 <style>
-  /* ---- Layout a due colonne ---- */
-  .guida-wrap {
-    display: grid;
-    grid-template-columns: 14rem 1fr;
-    gap: 3.5rem;
-    align-items: start;
-    padding-block: 2.5rem;
-  }
-  @media (max-width: 800px) {
-    .guida-wrap { grid-template-columns: 1fr; }
-    .sommario { position: static; }
-  }
-
-  /* ---- Sommario laterale sticky ---- */
-  .sommario {
-    position: sticky;
-    top: 5rem;
-    padding: 1.2rem;
-    border: 1px solid var(--linea);
-    border-radius: 6px;
-    background: var(--carta-alt);
-    font-size: 0.9rem;
-  }
-  .som-titolo { margin: 0 0 0.7rem; font-size: 0.72rem; }
-  .sommario ol {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-  }
-  .sommario a {
-    display: block;
-    text-decoration: none;
-    color: var(--inchiostro-tenue);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    border-left: 2px solid transparent;
-    transition: all 0.15s ease;
-    line-height: 1.35;
-  }
-  .sommario a:hover { color: var(--inchiostro); background: var(--evidenzia); }
-  .sommario a.attiva { color: var(--rubrica); border-left-color: var(--oro); background: var(--evidenzia); }
-
   /* ---- Corpo ---- */
   .corpo { max-width: 52rem; }
   .testata-guida { margin-bottom: 0; }
@@ -992,7 +900,7 @@ body {
     scroll-margin-top: 5.5rem;
   }
   section h2 {
-    border-bottom: 1px solid var(--linea);
+    border-bottom: 2px solid var(--linea);
     padding-bottom: 0.4rem;
     margin-bottom: 1.2rem;
   }
@@ -1001,7 +909,7 @@ body {
   /* ---- Blocchi di codice ---- */
   pre {
     background: var(--carta-alt);
-    border: 1px solid var(--linea);
+    border: 1.5px solid var(--linea);
     border-radius: 6px;
     padding: 1rem 1.2rem;
     overflow-x: auto;
@@ -1027,7 +935,7 @@ body {
   /* ---- Nota in evidenza ---- */
   .nota {
     background: var(--evidenzia);
-    border-left: 3px solid var(--oro);
+    border-left: 4px solid var(--oro);
     padding: 0.7rem 1rem;
     border-radius: 0 4px 4px 0;
     font-size: 0.95rem;
@@ -1049,10 +957,11 @@ body {
     vertical-align: top;
   }
   .tabella-campi th {
-    font-variant: small-caps;
+    text-transform: uppercase;
+    font-size: 0.8em;
     letter-spacing: 0.04em;
     color: var(--inchiostro-tenue);
-    font-weight: normal;
+    font-weight: 600;
     background: var(--carta-alt);
   }
   .tabella-campi tr:last-child td { border-bottom: none; }

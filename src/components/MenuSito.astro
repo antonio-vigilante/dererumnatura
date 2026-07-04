@@ -1,0 +1,54 @@
+---
+/**
+ * Menu di navigazione principale del sito.
+ * Vive in cima alla barra laterale di ogni pagina (vedi Sidebar.astro):
+ * prende il posto che un tempo occupava nell'header.
+ */
+const percorso = Astro.url.pathname;
+const voci = [
+  { href: '/', etichetta: 'Frontespizio' },
+  { href: '/indice/', etichetta: 'Indice' },
+  { href: '/glossario/', etichetta: 'Glossario' },
+  { href: '/bibliografia/', etichetta: 'Bibliografia' },
+  { href: '/cerca/', etichetta: 'Cerca' },
+  { href: '/guida/', etichetta: 'Guida' },
+];
+const attiva = (href: string) =>
+  href === '/' ? percorso === '/' : percorso.startsWith(href);
+---
+
+<nav class="menu-sito" id="menu-sito" aria-label="Navigazione principale">
+  <ul>
+    {voci.map((v) => (
+      <li>
+        <a href={v.href} class:list={[{ attiva: attiva(v.href) }]}>{v.etichetta}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .menu-sito ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .menu-sito a {
+    display: block;
+    text-decoration: none;
+    color: var(--inchiostro-tenue);
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s ease;
+  }
+  .menu-sito a:hover { color: var(--inchiostro); background: var(--evidenzia); }
+  .menu-sito a.attiva { color: var(--rubrica); border-left-color: var(--oro); background: var(--evidenzia); }
+</style>

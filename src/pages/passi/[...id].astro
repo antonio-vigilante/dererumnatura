@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ColonnaVersi from '../../components/ColonnaVersi.astro';
+import Sidebar from '../../components/Sidebar.astro';
 
 export async function getStaticPaths() {
   const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
@@ -29,45 +30,47 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 ---
 
 <BaseLayout titolo={`${data.titolo} — Libro ${data.libro}`} descrizione={data.sommario}>
-  <div class="passo-wrap contenitore">
+  <div class="contenitore layout-menu">
 
-    {/* ---- Scheda informazioni sul brano ---- */}
-    <aside class="scheda-brano no-stampa" aria-label="Informazioni sul brano">
-      <p class="scheda-titolo maiuscoletto tenue">Informazioni</p>
-      <dl class="scheda-campi">
-        <div class="scheda-riga">
-          <dt>Libro</dt>
-          <dd><a href={`/indice/#libro-${data.libro}`}>{libri[data.libro - 1]}</a></dd>
-        </div>
-        <div class="scheda-riga">
-          <dt>Versi</dt>
-          <dd>{data.versi}</dd>
-        </div>
-        {data.traduttore && (
+    <Sidebar>
+      {/* ---- Scheda informazioni sul brano ---- */}
+      <div class="scheda-brano">
+        <p class="scheda-titolo maiuscoletto tenue">Informazioni</p>
+        <dl class="scheda-campi">
           <div class="scheda-riga">
-            <dt>Traduzione</dt>
-            <dd>{data.traduttore}</dd>
+            <dt>Libro</dt>
+            <dd><a href={`/indice/#libro-${data.libro}`}>{libri[data.libro - 1]}</a></dd>
           </div>
-        )}
-        {data.fonteLatino && (
           <div class="scheda-riga">
-            <dt>Testo latino</dt>
-            <dd>{data.fonteLatino}</dd>
+            <dt>Versi</dt>
+            <dd>{data.versi}</dd>
           </div>
-        )}
-      </dl>
+          {data.traduttore && (
+            <div class="scheda-riga">
+              <dt>Traduzione</dt>
+              <dd>{data.traduttore}</dd>
+            </div>
+          )}
+          {data.fonteLatino && (
+            <div class="scheda-riga">
+              <dt>Testo latino</dt>
+              <dd>{data.fonteLatino}</dd>
+            </div>
+          )}
+        </dl>
 
-      {data.temi.length > 0 && (
-        <>
-          <p class="scheda-titolo maiuscoletto tenue scheda-titolo-temi">Temi</p>
-          <ul class="temi-tag scheda-temi">
-            {data.temi.map((t) => (
-              <li><a href={`/indice/#tema-${t}`}>{t}</a></li>
-            ))}
-          </ul>
-        </>
-      )}
-    </aside>
+        {data.temi.length > 0 && (
+          <>
+            <p class="scheda-titolo maiuscoletto tenue scheda-titolo-temi">Temi</p>
+            <ul class="temi-tag scheda-temi">
+              {data.temi.map((t) => (
+                <li><a href={`/indice/#tema-${t}`}>{t}</a></li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+    </Sidebar>
 
     <article class="passo">
     <header class="testata">
@@ -188,33 +191,11 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 </script>
 
 <style>
-  /* ---- Layout a due colonne ---- */
-  .passo-wrap {
-    display: grid;
-    grid-template-columns: 14rem 1fr;
-    gap: 3.5rem;
-    align-items: start;
-  }
-  @media (max-width: 800px) {
-    .passo-wrap { grid-template-columns: 1fr; }
-    .passo { order: 1; }
-    .scheda-brano { order: 2; position: static; margin-top: 3rem; }
-  }
-
-  .passo { padding-block: 2.5rem 1rem; min-width: 0; }
+  .passo { min-width: 0; }
   .testata { text-align: center; }
 
-  /* ---- Scheda informazioni sul brano (sidebar) ---- */
-  .scheda-brano {
-    position: sticky;
-    top: 5rem;
-    padding: 1.2rem;
-    border: 1px solid var(--linea);
-    border-radius: 6px;
-    background: var(--carta-alt);
-    font-size: 0.9rem;
-    margin-top: 2.5rem;
-  }
+  /* ---- Scheda informazioni sul brano (dentro la sidebar) ---- */
+  .scheda-brano { font-size: 0.9rem; }
   .scheda-titolo { margin: 0 0 0.6rem; font-size: 0.72rem; }
   .scheda-titolo-temi { margin-top: 1.2rem; }
   .scheda-campi { margin: 0; }
@@ -245,13 +226,14 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
     margin: 1rem 0 0;
   }
   .temi-tag a {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     text-decoration: none;
     padding: 0.15rem 0.7rem;
-    border: 1px solid var(--linea);
-    border-radius: 999px;
+    border: 1.5px solid var(--linea);
+    border-radius: 3px;
     color: var(--inchiostro-tenue);
-    font-variant: small-caps;
+    text-transform: uppercase;
+    font-weight: 600;
     letter-spacing: 0.04em;
   }
   .temi-tag a:hover { border-color: var(--oro); color: var(--rubrica); }
@@ -264,24 +246,23 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
     gap: 0.25rem;
     justify-content: center;
     flex-wrap: wrap;
-    border-bottom: 1px solid var(--linea);
+    border-bottom: 2px solid var(--linea);
     margin-bottom: 2rem;
   }
   .tab-nav button {
     background: transparent;
-    border: 1px solid transparent;
+    border: 1.5px solid transparent;
     border-bottom: none;
     color: var(--inchiostro-tenue);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.15rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    font-variant: small-caps;
+    text-transform: uppercase;
     letter-spacing: 0.05em;
     padding: 0.5rem 1.1rem;
     cursor: pointer;
     border-radius: 6px 6px 0 0;
     position: relative;
-    top: 1px;
+    top: 2px;
     transition: color 0.2s ease, background 0.2s ease;
   }
   .tab-nav button:hover { color: var(--inchiostro); }
@@ -289,7 +270,7 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
     color: var(--rubrica);
     background: var(--carta-alt);
     border-color: var(--linea);
-    border-bottom: 1px solid var(--carta-alt);
+    border-bottom: 2px solid var(--carta-alt);
   }
 
   .pannello { animation: comparsa 0.4s ease; }
@@ -312,11 +293,12 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
     display: flex;
     align-items: baseline;
     gap: 0.6rem;
-    font-size: 1.1rem;
-    font-variant: small-caps;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    font-weight: 600;
     letter-spacing: 0.05em;
     color: var(--inchiostro-tenue);
-    border-bottom: 1px solid var(--linea);
+    border-bottom: 1.5px solid var(--linea);
     padding-bottom: 0.4rem;
     margin-bottom: 1rem;
   }
@@ -337,7 +319,7 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
     justify-content: space-between;
     gap: 1rem;
     margin-top: 3.5rem;
-    border-top: 1px solid var(--linea);
+    border-top: 2px solid var(--linea);
     padding-top: 1.5rem;
   }
   .navi {

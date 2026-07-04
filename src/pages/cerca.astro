@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
 
 const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
   (a, b) => a.data.ordine - b.data.ordine
@@ -21,7 +22,9 @@ const indice = passi.map((p) => ({
 ---
 
 <BaseLayout titolo="Cerca">
-  <div class="contenitore cerca colonna-testo">
+  <div class="contenitore layout-menu">
+    <Sidebar />
+    <div class="cerca colonna-testo">
     <h1>Cerca nel poema</h1>
     <p class="tenue introd">
       Cerca fra i versi latini, la traduzione, le guide e i temi. Prova con
@@ -40,6 +43,7 @@ const indice = passi.map((p) => ({
 
     <p class="conteggio tenue" id="conteggio" aria-live="polite"></p>
     <ul class="risultati" id="risultati"></ul>
+    </div>
   </div>
 </BaseLayout>
 
@@ -107,17 +111,15 @@ const indice = passi.map((p) => ({
 </script>
 
 <style>
-  .cerca { padding-block: 2.5rem; }
   h1 { text-align: center; }
   .introd { text-align: center; }
   .campo { margin: 1.5rem 0 0.5rem; }
   #q {
     width: 100%;
-    font-family: 'EB Garamond', serif;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     padding: 0.7rem 1rem;
     background: var(--carta-alt);
-    border: 1px solid var(--linea);
+    border: 1.5px solid var(--linea);
     border-radius: 6px;
     color: var(--inchiostro);
   }
@@ -134,7 +136,7 @@ const indice = passi.map((p) => ({
     border-bottom: 1px dotted var(--linea);
   }
   .risultato a:hover { background: var(--evidenzia); }
-  .r-meta { font-size: 0.78rem; color: var(--inchiostro-tenue); font-variant: small-caps; letter-spacing: 0.05em; }
-  .r-tit { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--rubrica); }
+  .r-meta { font-size: 0.75rem; color: var(--inchiostro-tenue); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
+  .r-tit { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--rubrica); }
   .r-frammento { font-style: italic; color: var(--inchiostro-tenue); font-size: 0.95rem; }
 </style>

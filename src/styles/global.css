@@ -4,51 +4,53 @@
    ========================================================================= */
 
 /* ---- Font ----------------------------------------------------------------
-   Cormorant Garamond per i titoli (aldino, elegante),
-   EB Garamond per il corpo del testo (leggibile, classico). ------------- */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+   Playfair Display per i titoli (serif di contrasto, deciso),
+   Cinzel per il marchio e il titolo di apertura (capitali epigrafiche,
+   sul modello della colonna Traiana — Trajan non è un font libero),
+   Work Sans per il corpo del testo, i versi e i controlli (sans, pulito). */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
 
 /* ---- Temi di lettura -----------------------------------------------------
    papiro (chiaro), sepia (caldo), notte (scuro). Impostati via
-   data-theme sull'elemento <html>. ------------------------------------- */
+   data-theme sull'elemento <html>. Contrasto alto, linee decise. -------- */
 :root,
 :root[data-theme='papiro'] {
   --carta: #faf8f2;
-  --carta-alt: #f5f3ef;
-  --inchiostro: #1a1614;
-  --inchiostro-tenue: #6b5f52;
-  --rubrica: #8a2b1f;
-  --rubrica-scura: #6f2118;
-  --oro: #9c7a33;
-  --linea: #ddd8cf;
-  --ombra: rgba(26, 22, 20, 0.10);
-  --evidenzia: rgba(156, 122, 51, 0.10);
+  --carta-alt: #f0ede4;
+  --inchiostro: #141110;
+  --inchiostro-tenue: #5c5044;
+  --rubrica: #b31f14;
+  --rubrica-scura: #8c1810;
+  --oro: #8a6412;
+  --linea: #c7bfae;
+  --ombra: rgba(20, 17, 16, 0.14);
+  --evidenzia: rgba(138, 100, 18, 0.12);
 }
 
 :root[data-theme='sepia'] {
   --carta: #e9dcc3;
-  --carta-alt: #e0d0b2;
-  --inchiostro: #3a2c1c;
-  --inchiostro-tenue: #6f5b41;
-  --rubrica: #8a2b1f;
-  --rubrica-scura: #6f2118;
-  --oro: #8a6a28;
-  --linea: #cdb894;
-  --ombra: rgba(58, 44, 28, 0.14);
-  --evidenzia: rgba(138, 106, 40, 0.18);
+  --carta-alt: #ddcba7;
+  --inchiostro: #2c2113;
+  --inchiostro-tenue: #5e4c33;
+  --rubrica: #a3200f;
+  --rubrica-scura: #7e190c;
+  --oro: #765311;
+  --linea: #b8a074;
+  --ombra: rgba(44, 33, 19, 0.18);
+  --evidenzia: rgba(118, 83, 17, 0.2);
 }
 
 :root[data-theme='notte'] {
-  --carta: #1c1a17;
-  --carta-alt: #24211c;
-  --inchiostro: #e6ddca;
-  --inchiostro-tenue: #a2977f;
-  --rubrica: #c96a53;
-  --rubrica-scura: #b3583f;
-  --oro: #c6a24e;
-  --linea: #3a352c;
-  --ombra: rgba(0, 0, 0, 0.5);
-  --evidenzia: rgba(198, 162, 78, 0.16);
+  --carta: #17150f;
+  --carta-alt: #211e17;
+  --inchiostro: #f2ead2;
+  --inchiostro-tenue: #b3a688;
+  --rubrica: #ff7a5c;
+  --rubrica-scura: #ff6644;
+  --oro: #e2b64f;
+  --linea: #4a4432;
+  --ombra: rgba(0, 0, 0, 0.6);
+  --evidenzia: rgba(226, 182, 79, 0.16);
 }
 
 /* ---- Reset di base ------------------------------------------------------ */
@@ -68,10 +70,10 @@ body {
   background-color: var(--carta);
   background-image: none;
   color: var(--inchiostro);
-  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
-  font-size: 1.18rem;
-  font-weight: 500;
-  line-height: 1.75;
+  font-family: 'Work Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.14rem;
+  font-weight: 400;
+  line-height: 1.4;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: auto;
   transition: background-color 0.4s ease, color 0.4s ease;
@@ -79,16 +81,16 @@ body {
 
 /* ---- Titoli ------------------------------------------------------------ */
 h1, h2, h3, h4 {
-  font-family: 'Cormorant Garamond', 'EB Garamond', serif;
-  font-weight: 600;
-  line-height: 1.15;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  line-height: 1.12;
   color: var(--inchiostro);
   margin-top: 0;
 }
 
 h1 {
   font-size: clamp(2.2rem, 5vw, 3.4rem);
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
 }
 
 h2 {
@@ -103,6 +105,7 @@ h3 {
 a {
   color: var(--rubrica);
   text-decoration-color: var(--oro);
+  text-decoration-thickness: 1.5px;
   text-underline-offset: 0.15em;
 }
 
@@ -121,25 +124,57 @@ a:hover {
   margin-inline: auto;
 }
 
+/* ---- Layout con barra laterale (menu del sito) -------------------------- */
+.layout-menu {
+  display: grid;
+  grid-template-columns: 14rem 1fr;
+  gap: 3.5rem;
+  align-items: start;
+  padding-block: 2.5rem;
+}
+@media (max-width: 800px) {
+  .layout-menu { grid-template-columns: 1fr; }
+}
+
+.barra-laterale {
+  position: sticky;
+  top: 5rem;
+  padding: 1.2rem;
+  border: 1.5px solid var(--linea);
+  border-radius: 6px;
+  background: var(--carta-alt);
+  font-size: 0.9rem;
+}
+.barra-laterale > * + * { margin-top: 1.2rem; }
+@media (max-width: 800px) {
+  .barra-laterale {
+    position: static;
+    margin-bottom: 2rem;
+    display: none;
+  }
+  html.menu-aperto .barra-laterale { display: block; }
+}
+
 /* ---- Capolettera (drop cap) -------------------------------------------- */
 .capolettera::first-letter {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Playfair Display', serif;
   float: left;
   font-size: 4.6rem;
   line-height: 0.72;
   padding: 0.1em 0.12em 0 0;
   margin-right: 0.04em;
   color: var(--rubrica);
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* ---- Fregio / ornamento ------------------------------------------------ */
+/* ---- Fregio / ornamento --------------------------------------------------
+   Doppio filetto pieno, non più a sfumatura: un segno netto, non evanescente. */
 .fregio {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.9rem;
-  color: var(--oro);
+  color: var(--rubrica);
   margin: 2.4rem 0;
   font-size: 1.1rem;
 }
@@ -147,17 +182,15 @@ a:hover {
 .fregio::before,
 .fregio::after {
   content: '';
-  height: 1px;
+  height: 2px;
   flex: 1;
   max-width: 8rem;
-  background: linear-gradient(to var(--dir, right), transparent, var(--oro));
+  background: var(--inchiostro);
 }
-
-.fregio::before { --dir: left; }
 
 /* ---- Citazione / marginalia -------------------------------------------- */
 blockquote {
-  border-left: 3px solid var(--oro);
+  border-left: 4px solid var(--inchiostro);
   margin-inline: 0;
   padding-left: 1.2rem;
   color: var(--inchiostro-tenue);
@@ -168,8 +201,9 @@ blockquote {
 .rubrica { color: var(--rubrica); }
 .tenue { color: var(--inchiostro-tenue); }
 .maiuscoletto {
-  font-variant: small-caps;
-  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.08em;
 }
 
 .sr-only {
