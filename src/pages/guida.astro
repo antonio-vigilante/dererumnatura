@@ -1,0 +1,1080 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const sezioni = [
+  { id: 'panoramica',   titolo: 'Panoramica' },
+  { id: 'avvio',        titolo: 'Primo avvio' },
+  { id: 'struttura',    titolo: 'Struttura del progetto' },
+  { id: 'aggiungere',   titolo: 'Aggiungere un brano' },
+  { id: 'frontmatter',  titolo: 'Riferimento frontmatter' },
+  { id: 'versi',        titolo: 'Formattare i versi' },
+  { id: 'note',         titolo: 'Note a piè di colonna' },
+  { id: 'guida-lettura','titolo': 'Guida alla lettura' },
+  { id: 'glossario',    titolo: 'Il Glossario' },
+  { id: 'temi',         titolo: 'Indice tematico' },
+  { id: 'grafica',      titolo: 'Personalizzare la grafica' },
+  { id: 'font',         titolo: 'Cambiare i font' },
+  { id: 'pubblicare',   titolo: 'Pubblicare il sito' },
+  { id: 'faq',          titolo: 'Problemi comuni' },
+];
+---
+
+<BaseLayout titolo="Guida all'uso" descrizione="Come inserire i testi, modificare la grafica e adattare il template del De Rerum Natura.">
+  <div class="guida-wrap contenitore">
+
+    {/* ---- Sommario laterale ---- */}
+    <nav class="sommario no-stampa" aria-label="Sommario della guida">
+      <p class="som-titolo maiuscoletto tenue">In questa pagina</p>
+      <ol>
+        {sezioni.map((s) => (
+          <li><a href={`#${s.id}`}>{s.titolo}</a></li>
+        ))}
+      </ol>
+    </nav>
+
+    {/* ---- Corpo della guida ---- */}
+    <article class="corpo">
+
+      <header class="testata-guida">
+        <p class="occhiello maiuscoletto tenue">Documentazione editoriale</p>
+        <h1>Guida all'uso del template</h1>
+        <p class="intro">
+          Questa pagina spiega come inserire nuovi brani, come formattare i versi,
+          come aggiungere voci al glossario e come adattare la grafica alle esigenze
+          della tua edizione.
+        </p>
+      </header>
+
+      <div class="fregio">❦</div>
+
+
+      {/* ======================================================= PANORAMICA */}
+      <section id="panoramica">
+        <h2>Panoramica</h2>
+        <p>
+          Il template è un sito statico basato su <strong>Astro</strong>. Ogni brano
+          del poema è un singolo file <code>.md</code> in
+          <code>src/content/passi/</code>. Astro legge quei file e genera
+          automaticamente le pagine con le schede a tab, la vista a fronte, la
+          navigazione e la ricerca. Non serve un database né un CMS.
+        </p>
+        <p>
+          Il flusso di lavoro tipico è:
+        </p>
+        <ol class="steps">
+          <li>Crei o modifichi un file <code>.md</code> in <code>src/content/passi/</code>.</li>
+          <li>Avvii <code>npm run dev</code> per vedere le modifiche in tempo reale.</li>
+          <li>Quando sei soddisfatto, esegui <code>npm run build</code> e carichi la
+          cartella <code>dist/</code> sul tuo spazio di hosting.</li>
+        </ol>
+      </section>
+
+
+      {/* ========================================================== AVVIO */}
+      <section id="avvio">
+        <h2>Primo avvio</h2>
+        <p>
+          Entra nella cartella del progetto e installa le dipendenze (basta farlo
+          una volta sola):
+        </p>
+        <pre><code>npm install</code></pre>
+        <p>Avvia il server di sviluppo locale:</p>
+        <pre><code>npm run dev</code></pre>
+        <p>
+          Apri il browser su <code>http://localhost:4321</code>. Ogni volta che
+          salvi un file, la pagina si aggiorna automaticamente.
+        </p>
+        <div class="nota">
+          <strong>Nota:</strong> per modificare solo i contenuti (testi, traduzioni,
+          guida) non è obbligatorio avviare il server: puoi editare i file
+          <code>.md</code> e poi rifare la build direttamente.
+        </div>
+      </section>
+
+
+      {/* ====================================================== STRUTTURA */}
+      <section id="struttura">
+        <h2>Struttura del progetto</h2>
+        <p>I file e le cartelle che toccherai più spesso:</p>
+        <pre><code>{`lucrezio_nuovo/
+│
+├── src/
+│   ├── content/
+│   │   └── passi/              ← I BRANI: un file .md per ogni brano
+│   │       ├── 01-inno-a-venere.md
+│   │       ├── 02-suave-mari-magno.md
+│   │       └── …
+│   │
+│   ├── data/
+│   │   └── glossario.ts        ← LE VOCI DEL GLOSSARIO
+│   │
+│   ├── pages/
+│   │   ├── index.astro         ← Frontespizio
+│   │   ├── indice.astro        ← Indice per libro + temi
+│   │   ├── glossario.astro     ← Pagina glossario
+│   │   ├── cerca.astro         ← Ricerca
+│   │   ├── guida.astro         ← Questa pagina
+│   │   └── passi/[...id].astro ← Template pagina brano (non modificare
+│   │                              a meno che tu non voglia cambiare il layout)
+│   │
+│   ├── styles/
+│   │   └── global.css          ← COLORI, FONT, TEMI DI LETTURA
+│   │
+│   └── components/
+│       ├── Header.astro        ← Testata e navigazione
+│       ├── Footer.astro        ← Piè di pagina
+│       └── ColonnaVersi.astro  ← Riga di versi con numerazione
+│
+├── public/
+│   └── favicon.svg             ← L'icona del sito
+│
+└── astro.config.mjs            ← Configurazione Astro (url del sito, ecc.)`}</code></pre>
+        <p>
+          Per la maggior parte del lavoro editoriale tocchi <strong>solo</strong>
+          la cartella <code>src/content/passi/</code> e il file
+          <code>src/data/glossario.ts</code>.
+        </p>
+      </section>
+
+
+      {/* ===================================================== AGGIUNGERE */}
+      <section id="aggiungere">
+        <h2>Aggiungere un brano</h2>
+
+        <h3>1. Crea il file</h3>
+        <p>
+          Crea un nuovo file <code>.md</code> in <code>src/content/passi/</code>.
+          La convenzione per il nome è: <code>NN-slug-del-titolo.md</code>, dove
+          <code>NN</code> è un numero progressivo a due cifre. Questo determina
+          l'ordinamento nei file system, ma <em>non</em> l'ordine di pubblicazione
+          (quello lo controlla il campo <code>ordine</code> nel frontmatter).
+        </p>
+        <pre><code>src/content/passi/04-elogio-di-epicuro.md</code></pre>
+
+        <h3>2. Scrivi il frontmatter</h3>
+        <p>
+          Il frontmatter è la sezione tra i due <code>---</code> in cima al file.
+          Contiene tutti i metadati e i testi del brano. Vedi la sezione
+          <a href="#frontmatter">Riferimento frontmatter</a> per il dettaglio
+          di ogni campo.
+        </p>
+        <pre><code>{`---
+libro: 3
+titolo: "Elogio di Epicuro"
+versi: "1-30"
+versoIniziale: 1
+ordine: 4
+sommario: "L'omaggio di Lucrezio al maestro: Epicuro come un dio..."
+temi: ["sapientia", "ataraxia", "proemio"]
+traduttore: "Mario Rossi"
+fonteLatino: "ed. Bailey, Oxford 1947"
+# versoInizialeIt: 1   ← decommentare se la traduzione ha numerazione propria
+
+latino:                 # 4 esametri latini…
+  - "E tenebris tantis tam clarum extollere lumen"
+  - "qui primus potuisti inlustrans commoda vitae,"
+  - "te sequor, o Graiae gentis decus, inque tuis nunc"
+  - "ficta pedum pono pressis vestigia signis,"
+
+italiano:              # …diventano 5 endecasillabi: nessun problema
+  - "Tu che da buio così fitto primo"
+  - "hai potuto levare un lume chiaro,"
+  - "illustrando i beni della vita,"
+  - "te seguo, ornamento della stirpe"
+  - "greca, e nelle tue orme metto i passi."
+---
+
+## Il dio senza altare
+
+...qui inizia la guida alla lettura in Markdown...`}</code></pre>
+
+        <h3>3. Salva e controlla</h3>
+        <p>
+          Se il server di sviluppo è attivo, la pagina appare subito all'indirizzo
+          <code>/passi/04-elogio-di-epicuro/</code>. Il frontespizio, l'indice e
+          la ricerca si aggiornano automaticamente senza toccare altri file.
+        </p>
+
+        <div class="nota">
+          <strong>Bozze:</strong> aggiungi <code>bozza: true</code> nel frontmatter
+          per escludere temporaneamente un brano dalla pubblicazione. Il file rimane
+          nella cartella ma non viene incluso nel sito generato.
+        </div>
+      </section>
+
+
+      {/* ==================================================== FRONTMATTER */}
+      <section id="frontmatter">
+        <h2>Riferimento frontmatter</h2>
+        <p>Tutti i campi che puoi usare in un file brano.</p>
+
+        <table class="tabella-campi">
+          <thead>
+            <tr>
+              <th>Campo</th>
+              <th>Tipo</th>
+              <th>Obbl.</th>
+              <th>Descrizione</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>libro</code></td>
+              <td>numero 1–6</td>
+              <td class="si">sì</td>
+              <td>Numero del libro del <em>De Rerum Natura</em> in cui si trova il brano.</td>
+            </tr>
+            <tr>
+              <td><code>titolo</code></td>
+              <td>testo</td>
+              <td class="si">sì</td>
+              <td>Titolo del brano. Appare nell'intestazione della pagina e nell'indice.</td>
+            </tr>
+            <tr>
+              <td><code>versi</code></td>
+              <td>testo</td>
+              <td class="si">sì</td>
+              <td>
+                Intervallo dei versi nel formato <code>"1-43"</code> o
+                <code>"830-842"</code>. Usato solo per l'indicazione visiva;
+                la numerazione effettiva viene da <code>versoIniziale</code>.
+              </td>
+            </tr>
+            <tr>
+              <td><code>versoIniziale</code></td>
+              <td>numero intero</td>
+              <td class="no">no</td>
+              <td>
+                Numero del <em>primo</em> verso del brano nell'edizione canonica.
+                Determina la numerazione a margine. Default: <code>1</code>.
+                Per i vv. 830–842 del libro III, metti <code>830</code>.
+              </td>
+            </tr>
+            <tr>
+              <td><code>ordine</code></td>
+              <td>numero</td>
+              <td class="si">sì</td>
+              <td>
+                Posizione del brano nell'ordine di lettura del sito. Controlla
+                la sequenza nel frontespizio, nell'indice e nei link
+                "precedente / successivo". Usa numeri interi consecutivi:
+                <code>1</code>, <code>2</code>, <code>3</code>…
+              </td>
+            </tr>
+            <tr>
+              <td><code>sommario</code></td>
+              <td>testo</td>
+              <td class="no">no</td>
+              <td>
+                Breve descrizione (1–2 righe). Appare sotto il titolo nella pagina
+                del brano e nelle schede del frontespizio.
+              </td>
+            </tr>
+            <tr>
+              <td><code>temi</code></td>
+              <td>lista di testi</td>
+              <td class="no">no</td>
+              <td>
+                Parole-chiave tematiche (es. <code>["ataraxia", "metus mortis"]</code>).
+                Alimentano l'indice tematico e i tag visualizzati nella pagina.
+                Usa termini già presenti in altri brani per collegarli.
+              </td>
+            </tr>
+            <tr>
+              <td><code>latino</code></td>
+              <td>lista di testi</td>
+              <td class="si">sì</td>
+              <td>
+                I versi latini: <strong>un elemento per verso</strong>.
+                Indipendente dall'array <code>italiano</code>: le lunghezze
+                possono e di norma <em>devono</em> differire.
+              </td>
+            </tr>
+            <tr>
+              <td><code>italiano</code></td>
+              <td>lista di testi</td>
+              <td class="si">sì</td>
+              <td>
+                I versi della traduzione italiana: <strong>un elemento per
+                verso della traduzione</strong>. Non deve avere la stessa
+                lunghezza di <code>latino</code>. Nel "testo a fronte" le
+                due colonne scorrono in modo indipendente, come nelle
+                edizioni bilingui cartacee.
+              </td>
+            </tr>
+            <tr>
+              <td><code>versoInizialeIt</code></td>
+              <td>numero intero</td>
+              <td class="no">no</td>
+              <td>
+                Numero del primo verso della traduzione italiana. Se presente,
+                abilita la numerazione a margine anche per la colonna italiana
+                (es. <code>1</code> per una traduzione numerata dall'inizio).
+                Se assente (caso più comune), la colonna italiana non mostra
+                numeri di verso: è la situazione tipica quando la traduzione
+                è in endecasillabi o in altra forma metrica propria.
+              </td>
+            </tr>
+            <tr>
+              <td><code>fonteLatino</code></td>
+              <td>testo</td>
+              <td class="no">no</td>
+              <td>
+                Indicazione dell'edizione critica usata per il testo latino
+                (es. <code>"ed. Bailey, Oxford 1947"</code>). Appare come
+                credito sotto la colonna latina.
+              </td>
+            </tr>
+            <tr>
+              <td><code>traduttore</code></td>
+              <td>testo</td>
+              <td class="no">no</td>
+              <td>
+                Nome del traduttore. Appare come credito sotto la colonna italiana.
+              </td>
+            </tr>
+            <tr>
+              <td><code>bozza</code></td>
+              <td>booleano</td>
+              <td class="no">no</td>
+              <td>
+                Se <code>true</code>, il brano non viene incluso nella build
+                pubblica. Utile per lavori in corso. Default: <code>false</code>.
+              </td>
+            </tr>
+            <tr>
+              <td><code>note</code></td>
+              <td>lista di oggetti</td>
+              <td class="no">no</td>
+              <td>
+                Note a piè di colonna, richiamate da un marcatore <code>[n]</code>
+                dentro un verso. Vedi <a href="#note">Note a piè di colonna</a>.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+
+      {/* ======================================================== VERSI */}
+      <section id="versi">
+        <h2>Formattare i versi</h2>
+
+        <h3>Latino e italiano sono colonne indipendenti</h3>
+        <p>
+          Gli array <code>latino</code> e <code>italiano</code> sono
+          <strong>completamente indipendenti</strong>: possono avere lunghezze diverse.
+          Un esametro dattilico non corrisponde a un numero fisso di endecasillabi, e
+          non è necessario che lo faccia. Il "testo a fronte" mostra le due colonne
+          affiancate con le proprie numerazioni autonome — esattamente come nelle
+          migliori edizioni bilingui cartacee.
+        </p>
+        <pre><code>{`latino:          # 3 esametri
+  - "Aeneadum genetrix, hominum divomque voluptas,"
+  - "alma Venus, caeli subter labentia signa"
+  - "quae mare navigerum, quae terras frugiferentis"
+
+italiano:        # 4 endecasillabi: nessun problema
+  - "Madre degli Eneadi, piacere degli uomini"
+  - "e degli dèi, Venere generatrice,"
+  - "che popoli il mare solcato di navi"
+  - "e le terre colme di messi:"}`}</code></pre>
+
+        <p>
+          Nell'intestazione del "testo a fronte" il sito mostra automaticamente il
+          conteggio di ciascuna colonna (es. <em>Latino 20 vv. · Traduzione 24 vv.</em>),
+          così il lettore capisce subito che le misure differiscono.
+        </p>
+
+        <h3>Numeri di riferimento latino nella colonna italiana</h3>
+        <p>
+          Per aiutare il lettore a orientarsi tra le due versioni, puoi inserire in
+          qualsiasi verso italiano il <strong>marcatore <code>{`{N}`}</code></strong>:
+          il numero N verrà mostrato nel margine sinistro di quel verso (in rosso
+          rubrica, per distinguerlo dalla numerazione automatica latina), e il
+          marcatore non apparirà nel testo visualizzato.
+        </p>
+        <pre><code>{`italiano:
+  - "Madre degli Eneadi, piacere di uomini e dèi,"
+  - "Venere generatrice, che sotto gli astri erranti del cielo"
+  - "popoli il mare solcato di navi e le terre"
+  - "feconde di messi, poiché per te ogni specie di viventi"
+  - "{5}è concepita e, sorta alla vita, vede la luce del sole:"
+  - "te, o dea, te fuggono i venti, te e il tuo arrivo"`}</code></pre>
+        <p>
+          Il verso «{`{5}`}è concepita…» verrà mostrato come
+          «è concepita…» con il numero <strong>5</strong> in margine — senza
+          nessun vincolo sulla posizione: il 5 può cadere al secondo o al settimo
+          verso italiano a seconda di dove l'editore ritiene più preciso il rimando.
+        </p>
+        <p>
+          Per brani che iniziano a metà poema usa il numero canonico assoluto,
+          es. <code>{`{835}`}</code> per il v. 835 del libro III.
+        </p>
+        <div class="nota">
+          Non è necessario marcare ogni gruppo di 5 versi: scegli i punti editorialmente
+          significativi (fine di periodo, cesura semantica, verso particolarmente
+          citato). La colonna italiana resta leggibile anche con marcatori radi.
+        </div>
+
+        <h3>Numerazione dei versi latini</h3>
+        <p>
+          La numerazione latina appare ogni 5 versi, a partire dal numero indicato
+          in <code>versoIniziale</code>. Per brani tratti dal mezzo del poema
+          (es. vv. 830–842 del Libro III), imposta <code>versoIniziale: 830</code>:
+          la numerazione a margine mostrerà 835, 840, ecc.
+        </p>
+
+        <h3>Verso vuoto (lacuna o pausa visiva)</h3>
+        <p>
+          Usa una stringa vuota per inserire una riga bianca in un array —
+          utile per lacune nel testo o per separare visivamente gruppi di versi:
+        </p>
+        <pre><code>{`latino:
+  - "Aeneadum genetrix, hominum divomque voluptas,"
+  - ""                        ← riga bianca
+  - "alma Venus, caeli subter labentia signa"`}</code></pre>
+        <p>
+          Nella colonna italiana puoi inserire o meno una riga corrispondente,
+          a seconda di come vuoi gestire la pausa nella traduzione: le colonne
+          sono indipendenti, quindi una riga vuota nel latino non obbliga a
+          una riga vuota nell'italiano.
+        </p>
+
+        <h3>Rientri e HTML inline</h3>
+        <p>
+          In ogni verso puoi usare HTML inline: utile per rientri metrici o
+          per evidenziare termini tecnici:
+        </p>
+        <pre><code>{`latino:
+  - "Nil igitur mors est ad nos neque pertinet <em>hilum</em>,"
+  - "non si terra mari miscebitur et mare caelo,"
+  - "<span class=\\"rientro\\">omnia confundas.</span>"`}</code></pre>
+
+        <h3>Attenzione ai caratteri speciali in YAML</h3>
+        <ul>
+          <li>
+            Metti sempre le stringhe tra virgolette doppie per evitare che
+            <code>:</code> seguito da spazio venga interpretato come chiave YAML.
+          </li>
+          <li>
+            Le virgolette doppie <em>dentro</em> una stringa tra virgolette doppie
+            vanno precedute da <code>\</code>. In alternativa usa il blocco
+            letterale <code>|</code>:
+          </li>
+        </ul>
+        <pre><code>{`italiano:
+  - |
+    Un verso che contiene "virgolette" e: due punti`}</code></pre>
+      </section>
+
+
+      {/* ========================================================== NOTE */}
+      <section id="note">
+        <h2>Note a piè di colonna</h2>
+        <p>
+          Ogni verso, latino o italiano, può contenere un richiamo di nota
+          <code>[n]</code> in un punto qualsiasi del testo. Il sito lo trasforma
+          in un apice cliccabile che rimanda al testo della nota, elencato in
+          fondo alla stessa colonna.
+        </p>
+
+        <h3>1. Inserisci il richiamo nel verso</h3>
+        <pre><code>{`latino:
+  - "nam neque nos agere hoc patriai tempore iniquo[1]"
+
+italiano:
+  - "O madre degli Eneadi, piacere[1]"`}</code></pre>
+
+        <h3>2. Scrivi il testo della nota nel frontmatter</h3>
+        <p>
+          Aggiungi un campo <code>note</code>: una lista di oggetti con
+          <code>n</code> (il numero del richiamo), <code>lingua</code>
+          (<code>"la"</code> o <code>"it"</code>, a seconda della colonna in
+          cui si trova il richiamo) e <code>testo</code> (il contenuto della
+          nota, HTML inline ammesso).
+        </p>
+        <pre><code>{`note:
+  - n: 1
+    lingua: "it"
+    testo: "Traduce <em>voluptas</em>: non il semplice piacere dei sensi..."
+  - n: 1
+    lingua: "la"
+    testo: >
+      <em>patriai tempore iniquo</em>. Francesco Giancotti ha proposto una
+      lettura come ablativo: "se le circostanze fossero critiche per la
+      patria"...`}</code></pre>
+        <p>
+          Le due colonne hanno numerazioni di nota indipendenti: puoi avere un
+          richiamo <code>[1]</code> nel latino e un altro <code>[1]</code>
+          nell'italiano senza che si sovrappongano, come nell'esempio sopra.
+        </p>
+
+        <div class="nota">
+          <strong>Virgolette dentro il testo della nota:</strong> se la nota
+          cita una frase tra virgolette doppie, non scrivere
+          <code>testo: "...come "questa"..."</code> — la seconda coppia di
+          virgolette chiude la stringa YAML in anticipo e manda in errore
+          l'intero file. Usa invece il blocco <code>&gt;</code> (come sopra):
+          le virgolette dritte restano leggibili alla lettera, senza bisogno
+          di escape.
+        </div>
+      </section>
+
+
+      {/* ================================================= GUIDA LETTURA */}
+      <section id="guida-lettura">
+        <h2>La guida alla lettura</h2>
+        <p>
+          Il corpo del file <code>.md</code> — tutto ciò che viene <em>dopo</em>
+          il secondo <code>---</code> — è la <strong>guida alla lettura</strong>.
+          Viene resa nella scheda "Guida" e può contenere qualsiasi testo Markdown.
+        </p>
+
+        <h3>Struttura consigliata</h3>
+        <pre><code>{`---
+# frontmatter…
+---
+
+## Titolo della prima sezione
+
+Primo paragrafo — ottiene automaticamente il capolettera decorativo.
+
+## Parole-chiave
+
+- **clinamen** — la deviazione...
+- **voluptas** — il piacere...
+
+## Come leggere il ritmo
+
+Nota l'anafora di *te… te… tibi…*...
+
+> **Spunto di lettura**: perché un epicureo invoca una dea?
+> Confronta con l'elogio di Epicuro (Libro III).`}</code></pre>
+
+        <h3>Elementi utili</h3>
+        <dl class="elementi-md">
+          <dt><code>## Titolo</code></dt>
+          <dd>Sezione principale della guida (h2), in rosso rubrica.</dd>
+
+          <dt><code>### Sottotitolo</code></dt>
+          <dd>Sottosezione (h3), in colore normale.</dd>
+
+          <dt><code>**grassetto**</code> e <code>*corsivo*</code></dt>
+          <dd>Per enfatizzare termini latini o concetti chiave.</dd>
+
+          <dt><code>&gt; citazione</code></dt>
+          <dd>
+            Riquadro con bordo oro — ottimo per «Spunti di lettura»,
+            citazioni da altri autori o riferimenti bibliografici.
+          </dd>
+
+          <dt><code>[testo](url)</code></dt>
+          <dd>
+            Link interni al sito, es.{' '}
+            <code>[clinamen](/glossario/#clinamen)</code> per rimandare
+            a una voce del glossario.
+          </dd>
+
+          <dt><code>- elemento</code> / <code>1. elemento</code></dt>
+          <dd>Liste puntate o numerate, per analisi strutturali.</dd>
+        </dl>
+
+        <h3>Il capolettera automatico</h3>
+        <p>
+          Il primo paragrafo della guida riceve automaticamente il capolettera
+          decorativo (la grande iniziale in rosso). Non è necessario fare nulla:
+          basta iniziare il corpo del file con un paragrafo di testo normale.
+        </p>
+      </section>
+
+
+      {/* ===================================================== GLOSSARIO */}
+      <section id="glossario">
+        <h2>Il Glossario</h2>
+        <p>
+          Le voci del glossario sono definite nel file
+          <code>src/data/glossario.ts</code>. Non è un file di contenuto Markdown
+          ma un file TypeScript con un array di oggetti: questo permette al sito
+          di filtrare, ordinare e collegare le voci in modo affidabile.
+        </p>
+
+        <h3>Struttura di una voce</h3>
+        <pre><code>{`{
+  termine: 'Clinamen',          // nome della voce (obbligatorio)
+  greco: 'παρέγκλισις',         // termine greco originale (facoltativo)
+  latino: 'clinamen, declinatio', // rese latine nel poema (facoltativo)
+  categoria: 'fisica',          // fisica | etica | gnoseologia | teologia
+  definizione:
+    'La deviazione minima e imprevedibile...',  // testo (obbligatorio)
+},`}</code></pre>
+
+        <h3>Aggiungere una voce</h3>
+        <p>
+          Apri <code>src/data/glossario.ts</code> e aggiungi un oggetto
+          all'array <code>glossario</code>. Le voci vengono ordinate
+          alfabeticamente in automatico dalla pagina del glossario;
+          non preoccuparti dell'ordine nell'array.
+        </p>
+        <pre><code>{`export const glossario: VoceGlossario[] = [
+  // …voci esistenti…
+  {
+    termine: 'Tetrafarmaco',
+    greco: 'τετραφάρμακος',
+    categoria: 'etica',
+    definizione:
+      'La "quadrupla medicina" epicurea: non temere gli dèi, ' +
+      'non temere la morte, il bene è facile da procurare, ' +
+      'il male è facile da sopportare.',
+  },
+];`}</code></pre>
+
+        <h3>Collegare un brano a una voce</h3>
+        <p>
+          Usa il campo <code>temi</code> nel frontmatter del brano per collegarlo
+          all'indice tematico. Se vuoi anche rimandare alla voce di glossario
+          dalla guida alla lettura, inserisci un link Markdown:
+        </p>
+        <pre><code>{`Il concetto di [voluptas](/glossario/#voluptas) apre e chiude il poema.`}</code></pre>
+        <p>
+          L'àncora <code>#voluptas</code> funziona se la voce nel glossario ha
+          <code>termine: 'Voluptas'</code> — la pagina del glossario genera
+          automaticamente l'ID dalla stringa normalizzata (attenzione alle
+          maiuscole: usa l'ID in minuscolo nell'URL).
+        </p>
+        <div class="nota">
+          <strong>Nota tecnica:</strong> le àncone del glossario non sono ancora
+          generate automaticamente come ID. Se hai bisogno di link diretti alle
+          voci, aggiungi <code>id={`{termine.toLowerCase()}`}</code> ai
+          <code>&lt;div class="voce"&gt;</code> in <code>glossario.astro</code>.
+        </div>
+      </section>
+
+
+      {/* ====================================================== IND. TEMI */}
+      <section id="temi">
+        <h2>L'indice tematico</h2>
+        <p>
+          L'indice tematico (pagina <code>/indice/</code>, sezione inferiore)
+          si costruisce automaticamente dai campi <code>temi</code> di tutti i
+          brani pubblicati. Non c'è una lista centralizzata di temi: ogni tema
+          esiste dal momento in cui appare nel frontmatter di almeno un brano.
+        </p>
+
+        <h3>Consigli per una buona concordanza</h3>
+        <ul>
+          <li>
+            <strong>Usa termini consistenti</strong> tra i brani: <code>ataraxia</code>
+            e <code>atarassia</code> generano due voci separate. Scegli una forma
+            e usala sempre.
+          </li>
+          <li>
+            <strong>Preferisci i termini latini</strong> per i concetti tecnici
+            (<code>voluptas</code>, <code>metus mortis</code>) e l'italiano per
+            le categorie più ampie (<code>proemio</code>, <code>cosmologia</code>).
+          </li>
+          <li>
+            Ogni tema diventa un link navigabile: <code>/indice/#tema-ataraxia</code>.
+            Puoi usare questi link nelle guide per collegare i brani tra loro.
+          </li>
+        </ul>
+      </section>
+
+
+      {/* ====================================================== GRAFICA */}
+      <section id="grafica">
+        <h2>Personalizzare la grafica</h2>
+        <p>
+          Tutta la grafica è controllata dalle <strong>variabili CSS</strong>
+          definite in cima al file <code>src/styles/global.css</code>.
+          I tre temi di lettura (<em>papiro</em>, <em>sepia</em>, <em>notte</em>)
+          sono tre blocchi di variabili: puoi modificarli indipendentemente.
+        </p>
+
+        <h3>Le variabili principali</h3>
+        <table class="tabella-campi">
+          <thead>
+            <tr><th>Variabile</th><th>Uso</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--carta</code></td><td>Colore di fondo della pagina</td></tr>
+            <tr><td><code>--carta-alt</code></td><td>Fondo delle schede e delle card (leggermente più scuro)</td></tr>
+            <tr><td><code>--inchiostro</code></td><td>Colore principale del testo</td></tr>
+            <tr><td><code>--inchiostro-tenue</code></td><td>Testo secondario, didascalie, numeri di verso</td></tr>
+            <tr><td><code>--rubrica</code></td><td>Rosso delle rubriche: titoli h2, tab attivi, link</td></tr>
+            <tr><td><code>--oro</code></td><td>Filetti, ornamenti, bordi hover, tab attivo</td></tr>
+            <tr><td><code>--linea</code></td><td>Colore dei bordi e dei separatori</td></tr>
+            <tr><td><code>--evidenzia</code></td><td>Sfondo semi-trasparente per hover e target</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Esempio: cambiare il rosso rubrica nel tema papiro</h3>
+        <p>
+          Apri <code>src/styles/global.css</code> e trova il blocco
+          <code>:root[data-theme='papiro']</code>:
+        </p>
+        <pre><code>{`:root,
+:root[data-theme='papiro'] {
+  --rubrica: #8a2b1f;    ← cambia questo valore
+  --rubrica-scura: #6f2118;
+  /* … */
+}`}</code></pre>
+        <p>
+          Puoi usare qualsiasi valore CSS valido: esadecimale, <code>hsl()</code>,
+          <code>oklch()</code>…
+        </p>
+
+        <h3>Aggiungere un quarto tema</h3>
+        <p>
+          Copia uno dei blocchi di variabili, cambia il selettore
+          (<code>:root[data-theme='bosco']</code>) e aggiungi un bottone
+          corrispondente in <code>Header.astro</code>:
+        </p>
+        <pre><code>{`<button data-tema="bosco" title="Bosco" aria-label="Tema bosco">✦</button>`}</code></pre>
+      </section>
+
+
+      {/* ========================================================== FONT */}
+      <section id="font">
+        <h2>Cambiare i font</h2>
+        <p>
+          Il template usa due font da Google Fonts, importati in cima a
+          <code>global.css</code>:
+        </p>
+        <ul>
+          <li><strong>Cormorant Garamond</strong> — titoli, tab, occhielli.</li>
+          <li><strong>EB Garamond</strong> — corpo del testo, versi.</li>
+        </ul>
+        <p>
+          Per sostituirli, modifica la riga <code>@import</code> con il font
+          che preferisci da Google Fonts e aggiorna le proprietà
+          <code>font-family</code> nel CSS. Per un sito <em>offline</em> o per
+          prestazioni migliori, scarica i file <code>.woff2</code> e usali
+          con <code>@font-face</code> locale nella cartella <code>public/fonts/</code>.
+        </p>
+        <pre><code>{`/* Esempio con Palatino Linotype in locale */
+@font-face {
+  font-family: 'Palatino Linotype';
+  src: url('/fonts/palatino.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', serif;
+}`}</code></pre>
+        <div class="nota">
+          <strong>Consiglio:</strong> i font serif umanistici più adatti a
+          un'edizione classica sono Garamond, Palatino, Caslon, Bembo e Minion.
+          Tutti hanno buone versioni web gratuite o a basso costo.
+        </div>
+      </section>
+
+
+      {/* ===================================================== PUBBLICARE */}
+      <section id="pubblicare">
+        <h2>Pubblicare il sito</h2>
+        <p>
+          Il sito è <strong>completamente statico</strong>: <code>npm run build</code>
+          genera una cartella <code>dist/</code> fatta di soli file HTML, CSS e JS.
+          Puoi caricarla su qualsiasi servizio di hosting.
+        </p>
+
+        <h3>Build</h3>
+        <pre><code>npm run build</code></pre>
+        <p>
+          Al termine, la cartella <code>dist/</code> contiene tutto il sito
+          pronto per essere caricato.
+        </p>
+
+        <h3>Opzioni di hosting consigliate</h3>
+        <table class="tabella-campi">
+          <thead>
+            <tr><th>Servizio</th><th>Note</th><th>Costo</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Netlify</strong></td>
+              <td>
+                Trascina la cartella <code>dist/</code> su netlify.com/drop, oppure
+                collega il repository GitHub e imposta <code>npm run build</code>
+                come build command e <code>dist</code> come directory.
+              </td>
+              <td>Gratuito per siti statici</td>
+            </tr>
+            <tr>
+              <td><strong>GitHub Pages</strong></td>
+              <td>
+                Abilita Pages nel repository, crea una GitHub Action che esegue
+                <code>npm run build</code> e carica <code>dist/</code> sul branch
+                <code>gh-pages</code>.
+              </td>
+              <td>Gratuito</td>
+            </tr>
+            <tr>
+              <td><strong>Vercel</strong></td>
+              <td>
+                Importa il repository: Vercel rileva Astro automaticamente
+                e configura la build da solo.
+              </td>
+              <td>Gratuito per uso personale</td>
+            </tr>
+            <tr>
+              <td><strong>Server FTP</strong></td>
+              <td>
+                Carica il contenuto di <code>dist/</code> nella root del tuo
+                spazio web con qualsiasi client FTP.
+              </td>
+              <td>Secondo il tuo piano hosting</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Configurare l'URL del sito</h3>
+        <p>
+          Se pubblichi il sito su un sottodominio o in una sottocartella (es.
+          <code>miosito.it/lucrezio/</code>), apri <code>astro.config.mjs</code>
+          e imposta:
+        </p>
+        <pre><code>{`export default defineConfig({
+  site: 'https://miosito.it',
+  base: '/lucrezio',   // aggiungi questo se usi una sottocartella
+});`}</code></pre>
+      </section>
+
+
+      {/* =========================================================== FAQ */}
+      <section id="faq">
+        <h2>Problemi comuni</h2>
+
+        <dl class="faq">
+          <dt>Il brano non appare nel sito dopo averlo aggiunto.</dt>
+          <dd>
+            Controlla che il frontmatter sia valido YAML (nessuna tabulazione
+            mescolata agli spazi, stringhe tra virgolette). Controlla che il
+            campo <code>bozza</code> non sia <code>true</code>. Riavvia il
+            server di sviluppo con <code>npm run dev</code>.
+          </dd>
+
+          <dt>Gli array <code>latino</code> e <code>italiano</code> hanno lunghezze diverse.</dt>
+          <dd>
+            È la situazione normale e attesa: 20 esametri possono diventare 24
+            endecasillabi senza alcun problema. Le due colonne scorrono in modo
+            indipendente nel "testo a fronte", ognuna con la propria altezza.
+            Il sito mostra il conteggio di ciascuna colonna nell'intestazione
+            (es. <em>Latino 20 vv. · Traduzione 24 vv.</em>).
+          </dd>
+
+          <dt>Il YAML dà errore di parsing.</dt>
+          <dd>
+            I problemi più comuni: un verso che contiene <code>:</code> seguito
+            da spazio non è racchiuso tra virgolette; virgolette doppie all'interno
+            di stringhe già tra virgolette doppie senza la barra
+            <code>\"</code>; una riga di testo allineata con tabulazione
+            invece che con spazi. Un validatore YAML online (es. <em>yamlchecker.com</em>)
+            aiuta a trovare il problema.
+          </dd>
+
+          <dt>Voglio modificare il layout della pagina di un brano.</dt>
+          <dd>
+            Il file da editare è <code>src/pages/passi/[...id].astro</code>.
+            Le schede a tab, la navigazione prev/next e lo stile visivo sono
+            tutti lì. La colonna dei versi è in <code>src/components/ColonnaVersi.astro</code>.
+          </dd>
+
+          <dt>Come aggiungo note a margine o a piè di pagina sui singoli versi?</dt>
+          <dd>
+            Metti un richiamo <code>[n]</code> nel verso e aggiungi il testo
+            corrispondente nel campo <code>note</code> del frontmatter. Vedi
+            <a href="#note">Note a piè di colonna</a> per la sintassi completa.
+          </dd>
+
+          <dt>Come cambio il nome del sito («De Rerum Natura» nella testata)?</dt>
+          <dd>
+            Apri <code>src/components/Header.astro</code> e modifica il contenuto
+            di <code>.marca-titolo</code> e <code>.marca-sotto</code>. Il titolo
+            nei tag <code>&lt;title&gt;</code> è in
+            <code>src/layouts/BaseLayout.astro</code>.
+          </dd>
+        </dl>
+      </section>
+
+      <div class="fregio">❧</div>
+
+      <p class="coda tenue">
+        Per qualsiasi modifica strutturale più profonda — nuove pagine, nuove
+        collezioni di contenuto, componenti interattivi — la
+        <a href="https://docs.astro.build" target="_blank" rel="noopener">documentazione di Astro</a>
+        è completa e ben tenuta.
+      </p>
+
+    </article>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  /* Evidenzia la voce attiva nel sommario laterale mentre si scorre. */
+  (function () {
+    const sezioni = document.querySelectorAll('article section[id]');
+    const voci = document.querySelectorAll('.sommario a');
+    if (!sezioni.length || !voci.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            voci.forEach((v) => v.classList.remove('attiva'));
+            const corr = document.querySelector(`.sommario a[href="#${e.target.id}"]`);
+            if (corr) corr.classList.add('attiva');
+          }
+        }
+      },
+      { rootMargin: '-20% 0px -70% 0px' }
+    );
+    sezioni.forEach((s) => io.observe(s));
+  })();
+</script>
+
+<style>
+  /* ---- Layout a due colonne ---- */
+  .guida-wrap {
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+    gap: 3.5rem;
+    align-items: start;
+    padding-block: 2.5rem;
+  }
+  @media (max-width: 800px) {
+    .guida-wrap { grid-template-columns: 1fr; }
+    .sommario { position: static; }
+  }
+
+  /* ---- Sommario laterale sticky ---- */
+  .sommario {
+    position: sticky;
+    top: 5rem;
+    padding: 1.2rem;
+    border: 1px solid var(--linea);
+    border-radius: 6px;
+    background: var(--carta-alt);
+    font-size: 0.9rem;
+  }
+  .som-titolo { margin: 0 0 0.7rem; font-size: 0.72rem; }
+  .sommario ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .sommario a {
+    display: block;
+    text-decoration: none;
+    color: var(--inchiostro-tenue);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s ease;
+    line-height: 1.35;
+  }
+  .sommario a:hover { color: var(--inchiostro); background: var(--evidenzia); }
+  .sommario a.attiva { color: var(--rubrica); border-left-color: var(--oro); background: var(--evidenzia); }
+
+  /* ---- Corpo ---- */
+  .corpo { max-width: 52rem; }
+  .testata-guida { margin-bottom: 0; }
+  .occhiello { font-size: 0.85rem; margin-bottom: 0.4rem; }
+  .intro { font-size: 1.1rem; color: var(--inchiostro-tenue); font-style: italic; }
+
+  section {
+    margin-top: 3rem;
+    scroll-margin-top: 5.5rem;
+  }
+  section h2 {
+    border-bottom: 1px solid var(--linea);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1.2rem;
+  }
+  section h3 { margin-top: 1.8rem; }
+
+  /* ---- Blocchi di codice ---- */
+  pre {
+    background: var(--carta-alt);
+    border: 1px solid var(--linea);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin: 1rem 0;
+  }
+  code {
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--carta-alt);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    border: 1px solid var(--linea);
+  }
+  pre code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 1em;
+  }
+
+  /* ---- Nota in evidenza ---- */
+  .nota {
+    background: var(--evidenzia);
+    border-left: 3px solid var(--oro);
+    padding: 0.7rem 1rem;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.95rem;
+    margin: 1.2rem 0;
+  }
+
+  /* ---- Tabelle ---- */
+  .tabella-campi {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    margin: 1rem 0;
+  }
+  .tabella-campi th,
+  .tabella-campi td {
+    text-align: left;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--linea);
+    vertical-align: top;
+  }
+  .tabella-campi th {
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    color: var(--inchiostro-tenue);
+    font-weight: normal;
+    background: var(--carta-alt);
+  }
+  .tabella-campi tr:last-child td { border-bottom: none; }
+  .si { color: var(--rubrica); font-weight: 600; text-align: center; }
+  .no { color: var(--inchiostro-tenue); text-align: center; }
+
+  /* ---- Elenchi steps ---- */
+  .steps { padding-left: 1.4rem; }
+  .steps li { margin: 0.5rem 0; }
+
+  /* ---- Definizioni per elementi Markdown e FAQ ---- */
+  .elementi-md, .faq { margin: 1rem 0; }
+  .elementi-md dt, .faq dt {
+    font-weight: 600;
+    color: var(--rubrica);
+    margin-top: 1.2rem;
+  }
+  .elementi-md dd, .faq dd {
+    margin: 0.3rem 0 0 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--linea);
+  }
+
+  .coda { font-size: 0.95rem; font-style: italic; text-align: center; }
+</style>

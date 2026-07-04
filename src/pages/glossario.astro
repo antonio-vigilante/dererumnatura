@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { glossario } from '../data/glossario';
+
+const voci = [...glossario].sort((a, b) => a.termine.localeCompare(b.termine, 'it'));
+const etichetteCat: Record<string, string> = {
+  fisica: 'Fisica',
+  etica: 'Etica',
+  gnoseologia: 'Gnoseologia',
+  teologia: 'Teologia',
+};
+---
+
+<BaseLayout titolo="Glossario">
+  <div class="contenitore glossario colonna-testo">
+    <h1>Glossario epicureo</h1>
+    <p class="tenue introd">
+      Le parole-chiave del pensiero di Epicuro e di Lucrezio, con il termine greco
+      originario e le rese latine del poema. Usa il filtro per categoria.
+    </p>
+
+    <div class="filtri barra-strumenti no-stampa" role="group" aria-label="Filtra per categoria">
+      <button data-cat="tutte" aria-pressed="true">Tutte</button>
+      {Object.entries(etichetteCat).map(([k, v]) => (
+        <button data-cat={k} aria-pressed="false">{v}</button>
+      ))}
+    </div>
+
+    <div class="fregio">❦</div>
+
+    <dl class="voci">
+      {voci.map((v) => (
+        <div class="voce" data-cat={v.categoria}>
+          <dt>
+            <span class="termine">{v.termine}</span>
+            {v.greco && <span class="greco" lang="grc">{v.greco}</span>}
+            <span class="cat maiuscoletto tenue">{etichetteCat[v.categoria]}</span>
+          </dt>
+          <dd>
+            {v.latino && <p class="lat"><span class="tenue maiuscoletto">lat.</span> <em>{v.latino}</em></p>}
+            <p>{v.definizione}</p>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    const bottoni = document.querySelectorAll('.filtri button');
+    const voci = document.querySelectorAll('.voce');
+    bottoni.forEach((b) =>
+      b.addEventListener('click', () => {
+        const cat = b.dataset.cat;
+        bottoni.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        voci.forEach((v) => {
+          v.hidden = !(cat === 'tutte' || v.dataset.cat === cat);
+        });
+      })
+    );
+  })();
+</script>
+
+<style>
+  .glossario { padding-block: 2.5rem; }
+  h1 { text-align: center; }
+  .introd { text-align: center; font-size: 1.05rem; }
+
+  .filtri { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin-top: 1.2rem; }
+  .filtri button {
+    background: transparent;
+    border: 1px solid var(--linea);
+    color: var(--inchiostro-tenue);
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: 'EB Garamond', serif;
+    font-size: 0.95rem;
+  }
+  .filtri button:hover { border-color: var(--oro); color: var(--inchiostro); }
+  .filtri button[aria-pressed='true'] { background: var(--oro); color: var(--carta); border-color: var(--oro); }
+
+  .voci { margin: 0; }
+  .voce {
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--linea);
+  }
+  dt {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .termine {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    color: var(--rubrica);
+  }
+  .greco { font-size: 1.2rem; color: var(--inchiostro-tenue); font-style: italic; }
+  .cat {
+    margin-left: auto;
+    font-size: 0.72rem;
+    border: 1px solid var(--linea);
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+  }
+  dd { margin: 0.5rem 0 0; }
+  .lat { margin: 0 0 0.4rem; font-size: 0.95rem; }
+</style>

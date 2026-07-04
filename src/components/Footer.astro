@@ -1,0 +1,43 @@
+---
+const anno = new Date().getFullYear();
+---
+
+<footer class="sito no-stampa">
+  <div class="contenitore">
+    <p class="motto tenue">
+      «Suave, mari magno turbantibus aequora ventis,<br />
+      e terra magnum alterius spectare laborem…»
+    </p>
+    <p class="colophon tenue">
+      Edizione digitale del <em>De Rerum Natura</em> · testo, traduzione e guida
+      alla lettura · © {anno}. Template a scopo didattico.<br />
+      <a href="/guida/" class="link-guida">→ Guida all'uso del template</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  footer.sito {
+    border-top: 1px solid var(--linea);
+    margin-top: 4rem;
+    padding: 2.5rem 0 3rem;
+    text-align: center;
+  }
+  .motto {
+    font-style: italic;
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+  }
+  .colophon {
+    font-size: 0.85rem;
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+  .link-guida {
+    color: var(--oro);
+    text-decoration: none;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+  }
+  .link-guida:hover { color: var(--rubrica); }
+</style>

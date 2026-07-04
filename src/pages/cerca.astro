@@ -1,0 +1,140 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
+  (a, b) => a.data.ordine - b.data.ordine
+);
+const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+
+// Indice di ricerca: incluso nella pagina come JSON.
+const indice = passi.map((p) => ({
+  id: p.id,
+  titolo: p.data.titolo,
+  libro: libri[p.data.libro - 1],
+  versi: p.data.versi,
+  temi: p.data.temi,
+  latino: p.data.latino.join(' '),
+  italiano: p.data.italiano.join(' '),
+  guida: (p.body ?? '').replace(/[#*_>`\-]/g, ' '),
+}));
+---
+
+<BaseLayout titolo="Cerca">
+  <div class="contenitore cerca colonna-testo">
+    <h1>Cerca nel poema</h1>
+    <p class="tenue introd">
+      Cerca fra i versi latini, la traduzione, le guide e i temi. Prova con
+      <em>voluptas</em>, <em>morte</em>, <em>atomi</em>…
+    </p>
+
+    <div class="campo barra-strumenti">
+      <input
+        type="search"
+        id="q"
+        placeholder="Parola o frase…"
+        autocomplete="off"
+        aria-label="Termine di ricerca"
+      />
+    </div>
+
+    <p class="conteggio tenue" id="conteggio" aria-live="polite"></p>
+    <ul class="risultati" id="risultati"></ul>
+  </div>
+</BaseLayout>
+
+<script is:inline define:vars={{ indice }}>
+  const q = document.getElementById('q');
+  const out = document.getElementById('risultati');
+  const conteggio = document.getElementById('conteggio');
+  const campi = ['latino', 'italiano', 'guida', 'titolo'];
+
+  function normalizza(s) {
+    // Rimuove i segni diacritici combinanti (U+0300–U+036F) per una ricerca
+    // insensibile agli accenti.
+    return s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '');
+  }
+
+  const preparato = indice.map((v) => ({
+    ...v,
+    _cerca: normalizza([v.titolo, v.latino, v.italiano, v.guida, v.temi.join(' ')].join(' ')),
+  }));
+
+  function estrai(testo, termine) {
+    const i = normalizza(testo).indexOf(termine);
+    if (i < 0) return '';
+    const start = Math.max(0, i - 40);
+    const frammento = testo.slice(start, i + termine.length + 60);
+    return (start > 0 ? '…' : '') + frammento + '…';
+  }
+
+  function cerca() {
+    const termine = normalizza(q.value.trim());
+    out.innerHTML = '';
+    if (termine.length < 2) {
+      conteggio.textContent = '';
+      return;
+    }
+    const trovati = preparato.filter((v) => v._cerca.includes(termine));
+    conteggio.textContent = `${trovati.length} ${trovati.length === 1 ? 'risultato' : 'risultati'}`;
+
+    for (const v of trovati) {
+      let anteprima = '';
+      for (const c of campi) {
+        anteprima = estrai(v[c] || '', termine);
+        if (anteprima) break;
+      }
+      const li = document.createElement('li');
+      li.className = 'risultato';
+      li.innerHTML =
+        `<a href="/passi/${v.id}/">` +
+        `<span class="r-meta">Liber ${v.libro} · vv. ${v.versi}</span>` +
+        `<span class="r-tit">${v.titolo}</span>` +
+        (anteprima ? `<span class="r-frammento">${anteprima}</span>` : '') +
+        `</a>`;
+      out.appendChild(li);
+    }
+  }
+
+  q.addEventListener('input', cerca);
+  // Supporta ?q= nella URL.
+  const p = new URLSearchParams(location.search).get('q');
+  if (p) { q.value = p; cerca(); }
+  q.focus();
+</script>
+
+<style>
+  .cerca { padding-block: 2.5rem; }
+  h1 { text-align: center; }
+  .introd { text-align: center; }
+  .campo { margin: 1.5rem 0 0.5rem; }
+  #q {
+    width: 100%;
+    font-family: 'EB Garamond', serif;
+    font-size: 1.2rem;
+    padding: 0.7rem 1rem;
+    background: var(--carta-alt);
+    border: 1px solid var(--linea);
+    border-radius: 6px;
+    color: var(--inchiostro);
+  }
+  #q:focus { border-color: var(--oro); outline: none; }
+  .conteggio { font-size: 0.85rem; min-height: 1.2em; }
+
+  .risultati { list-style: none; padding: 0; margin: 0; }
+  .risultato a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    text-decoration: none;
+    padding: 1rem 0.3rem;
+    border-bottom: 1px dotted var(--linea);
+  }
+  .risultato a:hover { background: var(--evidenzia); }
+  .r-meta { font-size: 0.78rem; color: var(--inchiostro-tenue); font-variant: small-caps; letter-spacing: 0.05em; }
+  .r-tit { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--rubrica); }
+  .r-frammento { font-style: italic; color: var(--inchiostro-tenue); font-size: 0.95rem; }
+</style>

@@ -1,0 +1,353 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ColonnaVersi from '../../components/ColonnaVersi.astro';
+
+export async function getStaticPaths() {
+  const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
+    (a, b) => a.data.ordine - b.data.ordine
+  );
+
+  return passi.map((passo, i) => ({
+    params: { id: passo.id },
+    props: {
+      passo,
+      precedente: passi[i - 1] ?? null,
+      successivo: passi[i + 1] ?? null,
+    },
+  }));
+}
+
+const { passo, precedente, successivo } = Astro.props;
+const { data } = passo;
+const { Content } = await render(passo);
+
+const noteLatino = data.note.filter((n) => n.lingua === 'la');
+const noteItaliano = data.note.filter((n) => n.lingua === 'it');
+
+const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+---
+
+<BaseLayout titolo={`${data.titolo} — Libro ${data.libro}`} descrizione={data.sommario}>
+  <div class="passo-wrap contenitore">
+
+    {/* ---- Scheda informazioni sul brano ---- */}
+    <aside class="scheda-brano no-stampa" aria-label="Informazioni sul brano">
+      <p class="scheda-titolo maiuscoletto tenue">Informazioni</p>
+      <dl class="scheda-campi">
+        <div class="scheda-riga">
+          <dt>Libro</dt>
+          <dd><a href={`/indice/#libro-${data.libro}`}>{libri[data.libro - 1]}</a></dd>
+        </div>
+        <div class="scheda-riga">
+          <dt>Versi</dt>
+          <dd>{data.versi}</dd>
+        </div>
+        {data.traduttore && (
+          <div class="scheda-riga">
+            <dt>Traduzione</dt>
+            <dd>{data.traduttore}</dd>
+          </div>
+        )}
+        {data.fonteLatino && (
+          <div class="scheda-riga">
+            <dt>Testo latino</dt>
+            <dd>{data.fonteLatino}</dd>
+          </div>
+        )}
+      </dl>
+
+      {data.temi.length > 0 && (
+        <>
+          <p class="scheda-titolo maiuscoletto tenue scheda-titolo-temi">Temi</p>
+          <ul class="temi-tag scheda-temi">
+            {data.temi.map((t) => (
+              <li><a href={`/indice/#tema-${t}`}>{t}</a></li>
+            ))}
+          </ul>
+        </>
+      )}
+    </aside>
+
+    <article class="passo">
+    <header class="testata">
+      <h1>{data.titolo}</h1>
+    </header>
+
+    <div class="fregio no-stampa">❦</div>
+
+    {/* ---- Schede a tab: IT / LT / Guida / Testo a fronte ---- */}
+    <div class="schede" data-schede>
+      <div class="tab-nav barra-strumenti no-stampa" role="tablist" aria-label="Visualizzazione del brano">
+        <button role="tab" id="tab-italiano" aria-controls="pan-italiano" aria-selected="true" data-tab="italiano">IT</button>
+        <button role="tab" id="tab-latino" aria-controls="pan-latino" aria-selected="false" data-tab="latino">LT</button>
+        <button role="tab" id="tab-guida" aria-controls="pan-guida" aria-selected="false" data-tab="guida">Guida</button>
+        <button role="tab" id="tab-fronte" aria-controls="pan-fronte" aria-selected="false" data-tab="fronte">Testo a fronte</button>
+      </div>
+
+      <div class="pannello attivo colonna-testo" id="pan-italiano" role="tabpanel" aria-labelledby="tab-italiano">
+        <ColonnaVersi
+          versi={data.italiano}
+          versoIniziale={data.versoInizialeIt ?? 1}
+          mostraNumeri={data.versoInizialeIt !== undefined}
+          lingua="it"
+          note={noteItaliano}
+        />
+        {data.traduttore && <p class="credito tenue">Traduzione: {data.traduttore}</p>}
+      </div>
+
+      <div class="pannello colonna-testo" id="pan-latino" role="tabpanel" aria-labelledby="tab-latino" hidden>
+        <ColonnaVersi versi={data.latino} versoIniziale={data.versoIniziale} lingua="la" note={noteLatino} />
+        {data.fonteLatino && <p class="credito tenue">Testo latino: {data.fonteLatino}</p>}
+      </div>
+
+      <div class="pannello guida colonna-testo" id="pan-guida" role="tabpanel" aria-labelledby="tab-guida" hidden>
+        <div class="prosa capolettera">
+          <Content />
+        </div>
+      </div>
+
+      <div class="pannello fronte" id="pan-fronte" role="tabpanel" aria-labelledby="tab-fronte" hidden>
+        <div class="a-fronte">
+          <div class="fronte-col">
+            <h2 class="fronte-tit">
+              Latino
+              <span class="fronte-conteggio tenue">{data.latino.length} vv.</span>
+            </h2>
+            <ColonnaVersi versi={data.latino} versoIniziale={data.versoIniziale} lingua="la" note={noteLatino} />
+          </div>
+          <div class="fronte-col">
+            <h2 class="fronte-tit">
+              Traduzione
+              <span class="fronte-conteggio tenue">{data.italiano.length} vv.</span>
+            </h2>
+            <ColonnaVersi
+              versi={data.italiano}
+              versoIniziale={data.versoInizialeIt ?? 1}
+              mostraNumeri={data.versoInizialeIt !== undefined}
+              lingua="it"
+              note={noteItaliano}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* ---- Navigazione tra i brani ---- */}
+    <nav class="navi-brani no-stampa" aria-label="Navigazione tra i brani">
+      {precedente ? (
+        <a class="navi prec" href={`/passi/${precedente.id}/`}>
+          <span class="tenue maiuscoletto">← Precedente</span>
+          <span>{precedente.data.titolo}</span>
+        </a>
+      ) : <span />}
+      {successivo ? (
+        <a class="navi succ" href={`/passi/${successivo.id}/`}>
+          <span class="tenue maiuscoletto">Successivo →</span>
+          <span>{successivo.data.titolo}</span>
+        </a>
+      ) : <span />}
+    </nav>
+    </article>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    document.querySelectorAll('[data-schede]').forEach(function (gruppo) {
+      const tabs = gruppo.querySelectorAll('[role="tab"]');
+      const pannelli = gruppo.querySelectorAll('[role="tabpanel"]');
+
+      function attiva(nome) {
+        tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === nome)));
+        pannelli.forEach((p) => {
+          const suo = p.id === 'pan-' + nome;
+          p.hidden = !suo;
+          p.classList.toggle('attivo', suo);
+        });
+        try { history.replaceState(null, '', '#' + nome); } catch (e) {}
+      }
+
+      tabs.forEach((t) => t.addEventListener('click', () => attiva(t.dataset.tab)));
+
+      // Navigazione da tastiera tra i tab (frecce).
+      gruppo.addEventListener('keydown', (e) => {
+        if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+        const lista = Array.from(tabs);
+        const i = lista.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+        const j = e.key === 'ArrowRight' ? (i + 1) % lista.length : (i - 1 + lista.length) % lista.length;
+        lista[j].focus();
+        attiva(lista[j].dataset.tab);
+      });
+
+      // Apri sul tab indicato dall'ancora (#italiano, #guida…).
+      const iniziale = location.hash.replace('#', '');
+      if (['latino', 'italiano', 'guida', 'fronte'].includes(iniziale)) attiva(iniziale);
+    });
+  })();
+</script>
+
+<style>
+  /* ---- Layout a due colonne ---- */
+  .passo-wrap {
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+  @media (max-width: 800px) {
+    .passo-wrap { grid-template-columns: 1fr; }
+    .passo { order: 1; }
+    .scheda-brano { order: 2; position: static; margin-top: 3rem; }
+  }
+
+  .passo { padding-block: 2.5rem 1rem; min-width: 0; }
+  .testata { text-align: center; }
+
+  /* ---- Scheda informazioni sul brano (sidebar) ---- */
+  .scheda-brano {
+    position: sticky;
+    top: 5rem;
+    padding: 1.2rem;
+    border: 1px solid var(--linea);
+    border-radius: 6px;
+    background: var(--carta-alt);
+    font-size: 0.9rem;
+    margin-top: 2.5rem;
+  }
+  .scheda-titolo { margin: 0 0 0.6rem; font-size: 0.72rem; }
+  .scheda-titolo-temi { margin-top: 1.2rem; }
+  .scheda-campi { margin: 0; }
+  .scheda-riga {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--linea);
+  }
+  .scheda-riga:last-child { border-bottom: none; }
+  .scheda-riga dt { color: var(--inchiostro-tenue); }
+  .scheda-riga dd {
+    margin: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .scheda-riga dd a { color: var(--rubrica); text-decoration: none; }
+  .scheda-riga dd a:hover { text-decoration: underline; }
+
+  .temi-tag {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0;
+    margin: 1rem 0 0;
+  }
+  .temi-tag a {
+    font-size: 0.78rem;
+    text-decoration: none;
+    padding: 0.15rem 0.7rem;
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+    color: var(--inchiostro-tenue);
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+  }
+  .temi-tag a:hover { border-color: var(--oro); color: var(--rubrica); }
+  .scheda-temi { justify-content: flex-start; margin-top: 0.6rem; }
+  .scheda-temi a { font-size: 0.72rem; padding: 0.1rem 0.55rem; }
+
+  /* ---- Barra dei tab ---- */
+  .tab-nav {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--linea);
+    margin-bottom: 2rem;
+  }
+  .tab-nav button {
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom: none;
+    color: var(--inchiostro-tenue);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1.1rem;
+    cursor: pointer;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+    top: 1px;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  .tab-nav button:hover { color: var(--inchiostro); }
+  .tab-nav button[aria-selected='true'] {
+    color: var(--rubrica);
+    background: var(--carta-alt);
+    border-color: var(--linea);
+    border-bottom: 1px solid var(--carta-alt);
+  }
+
+  .pannello { animation: comparsa 0.4s ease; }
+  @keyframes comparsa { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .credito { font-size: 0.82rem; margin-top: 1.5rem; text-align: right; }
+
+  /* ---- Guida (prosa) ---- */
+  .prosa :global(h2) { margin-top: 2rem; font-size: 1.5rem; }
+  .prosa :global(h3) { margin-top: 1.6rem; color: var(--rubrica); }
+  .prosa :global(p) { margin: 1rem 0; }
+
+  /* ---- Testo a fronte ---- */
+  .a-fronte {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+  .fronte-tit {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 1.1rem;
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+    color: var(--inchiostro-tenue);
+    border-bottom: 1px solid var(--linea);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .fronte-conteggio {
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    margin-left: auto;
+    font-variant: normal;
+    letter-spacing: 0;
+  }
+  @media (max-width: 640px) {
+    .a-fronte { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  /* ---- Navigazione ---- */
+  .navi-brani {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3.5rem;
+    border-top: 1px solid var(--linea);
+    padding-top: 1.5rem;
+  }
+  .navi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    text-decoration: none;
+    max-width: 45%;
+  }
+  .navi.succ { text-align: right; margin-left: auto; }
+  .navi span:last-child { color: var(--rubrica); font-size: 1.1rem; }
+  .navi .maiuscoletto { font-size: 0.75rem; }
+</style>

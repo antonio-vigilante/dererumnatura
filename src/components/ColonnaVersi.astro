@@ -1,0 +1,160 @@
+---
+/**
+ * Colonna di versi con numerazione a margine.
+ *
+ * Latino  — mostraNumeri = true  → numero ogni 5 versi, calcolato dalla posizione,
+ *   a meno che il verso non abbia un marcatore inline {…} esplicito (vedi sotto),
+ *   che allora sovrascrive il numero automatico. Serve per i versi trasposti, dove
+ *   si vuole mostrare sia la posizione a stampa sia quella tradizionale, es.
+ *   "{15 (14)}et rapidos tranant amnis: ita...".
+ * Italiano — mostraNumeri = false → numero solo sui versi che hanno il marcatore
+ *   inline {…} (es. "{5}è concepita e, sorta alla vita, vede la luce del sole:").
+ *   Il marcatore viene estratto e non compare nel testo visualizzato.
+ *   I numeri italiani escono in rosso rubrica per distinguerli dai latini automatici.
+ *
+ * Il marcatore {…} può contenere qualunque testo, non solo un numero, per
+ * annotazioni come "15 (14)" nei casi di inversione dell'ordine dei versi.
+ *
+ * Note a piè di colonna — un richiamo inline [n] in un punto qualsiasi del verso
+ *   diventa un apice cliccabile che rimanda alla nota corrispondente, elencata
+ *   in fondo alla colonna (prop `note`, filtrata per lingua dal chiamante).
+ */
+interface Props {
+  versi: string[];
+  versoIniziale?: number;
+  lingua?: 'la' | 'it';
+  classe?: string;
+  mostraNumeri?: boolean;
+  note?: { n: number; testo: string }[];
+}
+const {
+  versi,
+  versoIniziale = 1,
+  lingua = 'la',
+  classe = '',
+  mostraNumeri = true,
+  note = [],
+} = Astro.props;
+
+// {…} opzionale all'inizio del verso: cattura l'etichetta (numero, o testo
+// libero come "15 (14)" per un verso trasposto) e il testo rimanente.
+const reMarcatore = /^\{([^}]+)\}([\s\S]*)$/;
+// [n] in un punto qualsiasi del verso: richiamo a una nota a piè di colonna.
+const reNota = /\[(\d+)\]/g;
+
+function conRichiami(testo: string): string {
+  return testo.replace(
+    reNota,
+    (_, n) =>
+      `<sup class="nota-richiamo"><a href="#nota-${lingua}-${n}" id="rif-nota-${lingua}-${n}">${n}</a></sup>`
+  );
+}
+---
+
+<ol class:list={['versi', classe]} lang={lingua} start={versoIniziale}>
+  {versi.map((riga, i) => {
+    const match = riga.match(reMarcatore);
+    const marcatore: string | null = match ? match[1] : null;
+    const testo = conRichiami(match ? match[2].trimStart() : riga);
+
+    const n = versoIniziale + i;
+    // Latino: numero automatico ogni 5 versi, salvo marcatore esplicito
+    // (es. verso trasposto: "{15 (14)}").
+    // Italiano: numero editoriale solo sui versi contrassegnati con {…}.
+    const numeroMargine: string | number | null = mostraNumeri
+      ? (marcatore ?? (n % 5 === 0 ? n : null))
+      : marcatore;
+
+    return (
+      <li class:list={['verso', { 'ref-latino': !mostraNumeri && marcatore !== null }]}>
+        <span class="numero" aria-hidden="true">
+          {numeroMargine ?? ''}
+        </span>
+        <span class="riga" set:html={testo || '&nbsp;'} />
+      </li>
+    );
+  })}
+</ol>
+
+{note.length > 0 && (
+  <ol class="note-piede">
+    {note.map((nt) => (
+      <li id={`nota-${lingua}-${nt.n}`}>
+        <a class="nota-numero" href={`#rif-nota-${lingua}-${nt.n}`} aria-label={`Torna al richiamo ${nt.n}`}>
+          {nt.n}
+        </a>
+        <span set:html={nt.testo} />
+      </li>
+    ))}
+  </ol>
+)}
+
+<style>
+  .versi {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .verso {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  .numero {
+    text-align: right;
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--inchiostro-tenue);
+    user-select: none;
+    padding-top: 0.15em;
+  }
+  /* I numeri di riferimento latino nella colonna italiana:
+     stesso layout, colore rubrica per distinguerli. */
+  .ref-latino .numero {
+    color: var(--rubrica);
+    font-style: italic;
+  }
+  .riga {
+    display: block;
+  }
+  .versi[lang='la'] .riga {
+    font-size: 1.16rem;
+    /* EB Garamond include forme "localizzate" per il sistema OpenType
+       Latino classico (tag LAT), attivate di default dall'attributo
+       lang="la": sostituiscono u/U/v con varianti in stile epigrafico.
+       Le disattiviamo per mantenere la u leggibile normalmente. */
+    font-feature-settings: "locl" off;
+  }
+  :global(.rientro) { padding-left: 2.4rem; display: inline-block; }
+
+  /* ---- Note a piè di colonna ---- */
+  :global(.nota-richiamo) {
+    font-size: 0.7em;
+    line-height: 0;
+  }
+  :global(.nota-richiamo a) {
+    color: var(--rubrica);
+    text-decoration: none;
+  }
+  .note-piede {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0.6rem 0 0;
+    border-top: 1px solid var(--linea);
+    font-size: 0.85rem;
+    color: var(--inchiostro-tenue);
+  }
+  .note-piede li {
+    display: grid;
+    grid-template-columns: 1.4rem 1fr;
+    gap: 0.4rem;
+    margin: 0.3rem 0;
+  }
+  .nota-numero {
+    text-align: right;
+    color: var(--rubrica);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

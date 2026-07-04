@@ -1,0 +1,16 @@
+{
+  "name": "lucrezio-de-rerum-natura",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Edizione umanistica del De Rerum Natura di Lucrezio — testo latino, traduzione italiana e guida alla lettura.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.2.0"
+  }
+}

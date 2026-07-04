@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout titolo="Pagina non trovata">
+  <section class="quattro contenitore">
+    <p class="maiuscoletto tenue">Errore CDIV</p>
+    <h1>Nulla di nulla</h1>
+    <p class="motto">
+      «<em>Nil posse creari de nilo</em>» — nulla può nascere dal nulla.<br />
+      La pagina che cerchi non esiste in natura.
+    </p>
+    <a class="torna" href="/">← Torna al frontespizio</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .quattro { text-align: center; padding: 5rem 0; max-width: 40rem; }
+  h1 { color: var(--rubrica); font-size: clamp(2.5rem, 8vw, 4.5rem); }
+  .motto { font-size: 1.2rem; line-height: 1.9; }
+  .torna {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-bottom: 1px solid var(--oro);
+  }
+</style>

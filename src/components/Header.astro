@@ -1,0 +1,208 @@
+---
+const percorso = Astro.url.pathname;
+const voci = [
+  { href: '/', etichetta: 'Frontespizio' },
+  { href: '/indice/', etichetta: 'Indice' },
+  { href: '/glossario/', etichetta: 'Glossario' },
+  { href: '/bibliografia/', etichetta: 'Bibliografia' },
+  { href: '/cerca/', etichetta: 'Cerca' },
+  { href: '/guida/', etichetta: 'Guida' },
+];
+const attiva = (href: string) =>
+  href === '/' ? percorso === '/' : percorso.startsWith(href);
+---
+
+<header class="sito no-stampa">
+  <div class="contenitore barra">
+    <a class="marca" href="/">
+      <span class="marca-titolo">De Rerum Natura</span>
+    </a>
+
+    <button class="hamburger" id="hamburger"
+      aria-label="Apri menu" aria-expanded="false" aria-controls="menu-nav">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="menu-wrap" id="menu-nav">
+      <nav class="nav" aria-label="Navigazione principale">
+        {voci.map((v) => (
+          <a href={v.href} class:list={['nav-voce', { attiva: attiva(v.href) }]}>
+            {v.etichetta}
+          </a>
+        ))}
+      </nav>
+
+      <div class="temi" role="group" aria-label="Tema di lettura">
+        <button data-tema="papiro" title="Papiro" aria-label="Tema papiro">☼</button>
+        <button data-tema="sepia" title="Sepia" aria-label="Tema sepia">◑</button>
+        <button data-tema="notte" title="Notte" aria-label="Tema notte">☾</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  (function () {
+    const btn  = document.getElementById('hamburger');
+    const menu = document.getElementById('menu-nav');
+    if (!btn || !menu) return;
+
+    btn.addEventListener('click', function () {
+      var aperto = menu.classList.contains('aperto');
+      menu.classList.toggle('aperto', !aperto);
+      btn.setAttribute('aria-expanded', String(!aperto));
+    });
+
+    menu.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        menu.classList.remove('aperto');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+</script>
+
+<style>
+  header.sito {
+    border-bottom: 1px solid var(--linea);
+    background: color-mix(in srgb, var(--carta) 92%, transparent);
+    backdrop-filter: blur(6px);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .barra {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.7rem 0;
+  }
+
+  .marca {
+    display: flex;
+    text-decoration: none;
+    margin-right: auto;
+  }
+  .marca-titolo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--rubrica);
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+  }
+
+  /* Hamburger: nascosto su desktop */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0.35rem 0.4rem;
+    background: transparent;
+    border: 1px solid var(--linea);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .hamburger span {
+    display: block;
+    height: 2px;
+    background: var(--inchiostro);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  .hamburger[aria-expanded='true'] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger[aria-expanded='true'] span:nth-child(2) { opacity: 0; }
+  .hamburger[aria-expanded='true'] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Desktop: menu sempre visibile */
+  @media (min-width: 681px) {
+    .menu-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+  }
+
+  .nav {
+    display: flex;
+    gap: 1.1rem;
+  }
+  .nav-voce {
+    text-decoration: none;
+    color: var(--inchiostro-tenue);
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+  .nav-voce:hover { color: var(--inchiostro); }
+  .nav-voce.attiva {
+    color: var(--rubrica);
+    border-bottom-color: var(--oro);
+  }
+
+  .temi { display: flex; gap: 0.15rem; }
+  .temi button {
+    background: transparent;
+    border: 1px solid var(--linea);
+    color: var(--inchiostro-tenue);
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+  }
+  .temi button:hover { border-color: var(--oro); color: var(--inchiostro); }
+  .temi button[aria-pressed='true'] {
+    background: var(--oro);
+    color: var(--carta);
+    border-color: var(--oro);
+  }
+
+  /* ---- Mobile ----------------------------------------- */
+  @media (max-width: 680px) {
+    .hamburger {
+      display: flex;
+    }
+
+    /* Menu chiuso: nascosto */
+    .menu-wrap {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.2rem;
+      padding: 1.2rem 4vw 1.5rem;
+      background: var(--carta);
+      border-bottom: 1px solid var(--linea);
+      box-shadow: 0 6px 16px var(--ombra);
+      z-index: 10;
+    }
+
+    /* Menu aperto */
+    .menu-wrap.aperto {
+      display: flex;
+    }
+
+    .nav {
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+    .nav-voce {
+      font-size: 1.1rem;
+    }
+  }
+</style>

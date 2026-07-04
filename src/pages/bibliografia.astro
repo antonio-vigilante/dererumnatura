@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { bibliografia } from '../data/bibliografia';
+
+const voci = [...bibliografia].sort(
+  (a, b) => a.autore.localeCompare(b.autore, 'it') || a.anno - b.anno
+);
+---
+
+<BaseLayout titolo="Bibliografia">
+  <div class="contenitore bibliografia colonna-testo">
+    <h1>Bibliografia</h1>
+    <p class="tenue introd">
+      Opere citate nelle guide alla lettura, in ordine autore-data. Per rimandare
+      a una voce da una guida: <code>[Autore anno](/bibliografia#chiave)</code>.
+    </p>
+
+    <div class="fregio">❦</div>
+
+    <dl class="voci">
+      {voci.map((v) => (
+        <div class="voce" id={v.chiave}>
+          <dt>
+            <span class="autore">{v.autore}</span>
+            <span class="anno rubrica">{v.anno}</span>
+          </dt>
+          <dd>
+            {v.tipo === 'articolo' ? (
+              <>
+                «{v.titolo}», {v.rivista}
+                {v.volume && ` ${v.volume}`}
+                {v.pagine && `, pp. ${v.pagine}`}.
+              </>
+            ) : v.tipo === 'capitolo' ? (
+              <>
+                «{v.titolo}», in {v.curatore}
+                {v.pagine && `, pp. ${v.pagine}`}, {v.luogo}, {v.editore}.
+              </>
+            ) : (
+              <>
+                <em>{v.titolo}</em>, {v.luogo}, {v.editore}.
+              </>
+            )}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</BaseLayout>
+
+<style>
+  .bibliografia { padding-block: 2.5rem; }
+  h1 { text-align: center; }
+  .introd { text-align: center; font-size: 1.05rem; }
+  .introd code { font-size: 0.9em; }
+
+  .voci { margin: 0; }
+  .voce {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--linea);
+    scroll-margin-top: 5rem;
+  }
+  .voce:target { background: var(--evidenzia); }
+  dt {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .autore {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+  }
+  .anno { font-variant-numeric: tabular-nums; }
+  dd { margin: 0.4rem 0 0; }
+</style>

@@ -1,0 +1,140 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
+  (a, b) => a.data.ordine - b.data.ordine
+);
+
+// Raggruppa per libro.
+const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+const titoliLibri = [
+  'La materia e il vuoto',
+  'Il moto e le forme degli atomi',
+  "L'anima e la morte",
+  'La conoscenza e i simulacri',
+  'Il mondo e la civiltà',
+  'I fenomeni celesti e la peste',
+];
+const perLibro = new Map<number, typeof passi>();
+for (const p of passi) {
+  const arr = perLibro.get(p.data.libro) ?? [];
+  arr.push(p);
+  perLibro.set(p.data.libro, arr);
+}
+
+// Indice tematico (concordanza).
+const perTema = new Map<string, typeof passi>();
+for (const p of passi) {
+  for (const t of p.data.temi) {
+    const arr = perTema.get(t) ?? [];
+    arr.push(p);
+    perTema.set(t, arr);
+  }
+}
+const temiOrdinati = [...perTema.keys()].sort();
+---
+
+<BaseLayout titolo="Indice">
+  <div class="contenitore indice colonna-testo">
+    <h1>Indice dell'opera</h1>
+    <p class="tenue introd">
+      Il <em>De Rerum Natura</em> si articola in sei libri, a coppie tematiche
+      (fisica, antropologia, cosmologia). Qui trovi i brani presenti nell'edizione,
+      ordinati per libro e per tema.
+    </p>
+
+    <div class="fregio">❦</div>
+
+    {[...perLibro.entries()].map(([n, elenco]) => (
+      <section class="libro" id={`libro-${n}`}>
+        <h2 class="titolo-libro">
+          <span class="num maiuscoletto">Liber {libri[n - 1]}</span>
+          <span class="etichetta-libro tenue">{titoliLibri[n - 1]}</span>
+        </h2>
+        <ol class="passi-libro">
+          {elenco.map((p) => (
+            <li>
+              <a href={`/passi/${p.id}/`}>
+                <span class="p-tit">{p.data.titolo}</span>
+                <span class="p-versi tenue">vv. {p.data.versi}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+
+    <div class="fregio">❧</div>
+
+    <section class="concordanza">
+      <h2>Indice tematico</h2>
+      <p class="tenue">I nuclei concettuali dell'epicureismo lucreziano, con i brani che li trattano.</p>
+      <dl class="temi-elenco">
+        {temiOrdinati.map((t) => (
+          <div class="tema-riga" id={`tema-${t}`}>
+            <dt class="maiuscoletto">{t}</dt>
+            <dd>
+              {perTema.get(t)!.map((p, i) => (
+                <>
+                  {i > 0 && <span class="sep">·</span>}
+                  <a href={`/passi/${p.id}/`}>{p.data.titolo}</a>
+                </>
+              ))}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .indice { padding-block: 2.5rem; }
+  h1 { text-align: center; }
+  .introd { text-align: center; font-size: 1.05rem; }
+
+  .libro { scroll-margin-top: 5rem; }
+  .titolo-libro {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    border-bottom: 1px solid var(--linea);
+    padding-bottom: 0.4rem;
+  }
+  .num { color: var(--rubrica); font-size: 1.5rem; }
+  .etichetta-libro { font-style: italic; font-size: 1.05rem; }
+
+  .passi-libro { list-style: none; padding: 0; margin: 0.8rem 0 2rem; }
+  .passi-libro li { margin: 0; }
+  .passi-libro a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    text-decoration: none;
+    padding: 0.5rem 0.3rem;
+    border-bottom: 1px dotted var(--linea);
+  }
+  .passi-libro a:hover { background: var(--evidenzia); }
+  .p-tit { font-size: 1.2rem; color: var(--rubrica); }
+  .p-versi { font-size: 0.85rem; white-space: nowrap; }
+
+  .temi-elenco { margin-top: 1rem; }
+  .tema-riga {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dotted var(--linea);
+    scroll-margin-top: 5rem;
+  }
+  .tema-riga:target { background: var(--evidenzia); border-radius: 4px; }
+  dt { color: var(--rubrica); letter-spacing: 0.05em; }
+  dd { margin: 0; }
+  dd a { text-decoration: none; }
+  .sep { color: var(--inchiostro-tenue); margin: 0 0.4rem; }
+  @media (max-width: 560px) {
+    .tema-riga { grid-template-columns: 1fr; gap: 0.2rem; }
+  }
+</style>

@@ -1,0 +1,62 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  titolo: string;
+  descrizione?: string;
+}
+const { titolo, descrizione = 'Edizione umanistica del De Rerum Natura di Lucrezio: testo latino, traduzione italiana e guida alla lettura.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="it" data-theme="papiro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={descrizione} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{titolo} · De Rerum Natura</title>
+
+    <!-- Applica il tema salvato prima del render, per evitare lo sfarfallio. -->
+    <script is:inline>
+      (function () {
+        try {
+          const t = localStorage.getItem('drn-tema');
+          if (t) document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#contenuto" class="sr-only">Salta al contenuto</a>
+    <Header />
+    <main id="contenuto">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Selettore del tema, condiviso da tutte le pagine. -->
+    <script is:inline>
+      (function () {
+        const html = document.documentElement;
+        const bottoni = document.querySelectorAll('.temi button[data-tema]');
+        function segna(attivo) {
+          bottoni.forEach((b) =>
+            b.setAttribute('aria-pressed', String(b.dataset.tema === attivo))
+          );
+        }
+        segna(html.getAttribute('data-theme') || 'papiro');
+        bottoni.forEach((b) => {
+          b.addEventListener('click', () => {
+            const t = b.dataset.tema;
+            html.setAttribute('data-theme', t);
+            try { localStorage.setItem('drn-tema', t); } catch (e) {}
+            segna(t);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
