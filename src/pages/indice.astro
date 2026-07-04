@@ -6,6 +6,7 @@ import Sidebar from '../components/Sidebar.astro';
 const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
   (a, b) => a.data.ordine - b.data.ordine
 );
+const base = import.meta.env.BASE_URL;
 
 // Raggruppa per libro.
 const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
@@ -58,7 +59,7 @@ const temiOrdinati = [...perTema.keys()].sort();
         <ol class="passi-libro">
           {elenco.map((p) => (
             <li>
-              <a href={`/passi/${p.id}/`}>
+              <a href={`${base}passi/${p.id}/`}>
                 <span class="p-tit">{p.data.titolo}</span>
                 <span class="p-versi tenue">vv. {p.data.versi}</span>
               </a>
@@ -81,7 +82,7 @@ const temiOrdinati = [...perTema.keys()].sort();
               {perTema.get(t)!.map((p, i) => (
                 <>
                   {i > 0 && <span class="sep">·</span>}
-                  <a href={`/passi/${p.id}/`}>{p.data.titolo}</a>
+                  <a href={`${base}passi/${p.id}/`}>{p.data.titolo}</a>
                 </>
               ))}
             </dd>

@@ -4,7 +4,8 @@
  * Vive in cima alla barra laterale di ogni pagina (vedi Sidebar.astro):
  * prende il posto che un tempo occupava nell'header.
  */
-const percorso = Astro.url.pathname;
+const base = import.meta.env.BASE_URL;
+const percorso = '/' + Astro.url.pathname.slice(base.length);
 const voci = [
   { href: '/', etichetta: 'Frontespizio' },
   { href: '/indice/', etichetta: 'Indice' },
@@ -21,7 +22,7 @@ const attiva = (href: string) =>
   <ul>
     {voci.map((v) => (
       <li>
-        <a href={v.href} class:list={[{ attiva: attiva(v.href) }]}>{v.etichetta}</a>
+        <a href={`${base}${v.href.replace(/^\//, '')}`} class:list={[{ attiva: attiva(v.href) }]}>{v.etichetta}</a>
       </li>
     ))}
   </ul>

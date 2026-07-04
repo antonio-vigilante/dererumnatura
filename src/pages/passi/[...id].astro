@@ -27,6 +27,7 @@ const noteLatino = data.note.filter((n) => n.lingua === 'la');
 const noteItaliano = data.note.filter((n) => n.lingua === 'it');
 
 const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout titolo={`${data.titolo} — Libro ${data.libro}`} descrizione={data.sommario}>
@@ -39,7 +40,7 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
         <dl class="scheda-campi">
           <div class="scheda-riga">
             <dt>Libro</dt>
-            <dd><a href={`/indice/#libro-${data.libro}`}>{libri[data.libro - 1]}</a></dd>
+            <dd><a href={`${base}indice/#libro-${data.libro}`}>{libri[data.libro - 1]}</a></dd>
           </div>
           <div class="scheda-riga">
             <dt>Versi</dt>
@@ -64,7 +65,7 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
             <p class="scheda-titolo maiuscoletto tenue scheda-titolo-temi">Temi</p>
             <ul class="temi-tag scheda-temi">
               {data.temi.map((t) => (
-                <li><a href={`/indice/#tema-${t}`}>{t}</a></li>
+                <li><a href={`${base}indice/#tema-${t}`}>{t}</a></li>
               ))}
             </ul>
           </>
@@ -139,13 +140,13 @@ const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
     {/* ---- Navigazione tra i brani ---- */}
     <nav class="navi-brani no-stampa" aria-label="Navigazione tra i brani">
       {precedente ? (
-        <a class="navi prec" href={`/passi/${precedente.id}/`}>
+        <a class="navi prec" href={`${base}passi/${precedente.id}/`}>
           <span class="tenue maiuscoletto">← Precedente</span>
           <span>{precedente.data.titolo}</span>
         </a>
       ) : <span />}
       {successivo ? (
-        <a class="navi succ" href={`/passi/${successivo.id}/`}>
+        <a class="navi succ" href={`${base}passi/${successivo.id}/`}>
           <span class="tenue maiuscoletto">Successivo →</span>
           <span>{successivo.data.titolo}</span>
         </a>

@@ -6,6 +6,7 @@ import Sidebar from '../components/Sidebar.astro';
 const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
   (a, b) => a.data.ordine - b.data.ordine
 );
+const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout titolo="Frontespizio" descrizione="Un'edizione digitale ad accesso aperto del De rerum natura di Lucrezio.">
@@ -20,7 +21,7 @@ const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
         <p class="epigrafe maiuscoletto tenue">Tito Lucrezio Caro</p>
         <h1>De rerum natura</h1>
         <p class="sottotitolo">Un'edizione digitale ad accesso aperto</p>
-        <a class="entra" href={`/passi/${passi[0].id}/`}>Comincia la lettura →</a>
+        <a class="entra" href={`${base}passi/${passi[0].id}/`}>Comincia la lettura →</a>
       </header>
 
       <div class="fregio">❦</div>

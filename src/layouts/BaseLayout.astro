@@ -16,7 +16,7 @@ const { titolo, descrizione = 'Edizione umanistica del De Rerum Natura di Lucrez
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={descrizione} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
     <title>{titolo} · De Rerum Natura</title>
 
     <!-- Applica il tema salvato prima del render, per evitare lo sfarfallio. -->

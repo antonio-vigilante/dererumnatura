@@ -19,6 +19,7 @@ const indice = passi.map((p) => ({
   italiano: p.data.italiano.join(' '),
   guida: (p.body ?? '').replace(/[#*_>`\-]/g, ' '),
 }));
+const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout titolo="Cerca">
@@ -47,7 +48,7 @@ const indice = passi.map((p) => ({
   </div>
 </BaseLayout>
 
-<script is:inline define:vars={{ indice }}>
+<script is:inline define:vars={{ indice, base }}>
   const q = document.getElementById('q');
   const out = document.getElementById('risultati');
   const conteggio = document.getElementById('conteggio');
@@ -94,7 +95,7 @@ const indice = passi.map((p) => ({
       const li = document.createElement('li');
       li.className = 'risultato';
       li.innerHTML =
-        `<a href="/passi/${v.id}/">` +
+        `<a href="${base}passi/${v.id}/">` +
         `<span class="r-meta">Liber ${v.libro} · vv. ${v.versi}</span>` +
         `<span class="r-tit">${v.titolo}</span>` +
         (anteprima ? `<span class="r-frammento">${anteprima}</span>` : '') +
