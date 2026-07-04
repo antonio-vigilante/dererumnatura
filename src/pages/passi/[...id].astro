@@ -80,13 +80,13 @@ const base = import.meta.env.BASE_URL;
 
     <div class="fregio no-stampa">❦</div>
 
-    {/* ---- Schede a tab: IT / LT / Guida / Testo a fronte ---- */}
+    {/* ---- Schede a tab: IT / LT / Testo a fronte / Guida ---- */}
     <div class="schede" data-schede>
       <div class="tab-nav barra-strumenti no-stampa" role="tablist" aria-label="Visualizzazione del brano">
         <button role="tab" id="tab-italiano" aria-controls="pan-italiano" aria-selected="true" data-tab="italiano">IT</button>
         <button role="tab" id="tab-latino" aria-controls="pan-latino" aria-selected="false" data-tab="latino">LT</button>
+        <button role="tab" id="tab-fronte" aria-controls="pan-fronte" aria-selected="false" data-tab="fronte" aria-label="Testo a fronte" title="Testo a fronte">TF</button>
         <button role="tab" id="tab-guida" aria-controls="pan-guida" aria-selected="false" data-tab="guida">Guida</button>
-        <button role="tab" id="tab-fronte" aria-controls="pan-fronte" aria-selected="false" data-tab="fronte">Testo a fronte</button>
       </div>
 
       <div class="pannello attivo colonna-testo" id="pan-italiano" role="tabpanel" aria-labelledby="tab-italiano">
