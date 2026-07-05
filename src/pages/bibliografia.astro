@@ -3,8 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import { bibliografia } from '../data/bibliografia';
 
+const cognome = (autore: string) =>
+  autore.replace(/\s*\([^)]*\)\s*$/, '').trim().split(/\s+/).pop()!;
+
 const voci = [...bibliografia].sort(
-  (a, b) => a.autore.localeCompare(b.autore, 'it') || a.anno - b.anno
+  (a, b) => cognome(a.autore).localeCompare(cognome(b.autore), 'it') || a.anno - b.anno
 );
 ---
 
@@ -24,24 +27,21 @@ const voci = [...bibliografia].sort(
       {voci.map((v) => (
         <div class="voce" id={v.chiave}>
           <dt>
-            <span class="autore">{v.autore}</span>
+            <span class="cognome">{cognome(v.autore)}</span>
             <span class="anno rubrica">{v.anno}</span>
           </dt>
           <dd>
-            {v.tipo === 'articolo' ? (
-              <>
-                «{v.titolo}», {v.rivista}
+            {v.autore}{v.tipo === 'articolo' ? (
+              <>, <em>{v.titolo}</em>, {v.rivista}
                 {v.volume && ` ${v.volume}`}
                 {v.pagine && `, pp. ${v.pagine}`}.
               </>
             ) : v.tipo === 'capitolo' ? (
-              <>
-                «{v.titolo}», in {v.curatore}
+              <>, «{v.titolo}», in {v.curatore}, <em>{v.raccolta}</em>
                 {v.pagine && `, pp. ${v.pagine}`}, {v.luogo}, {v.editore}.
               </>
             ) : (
-              <>
-                <em>{v.titolo}</em>, {v.luogo}, {v.editore}.
+              <>, <em>{v.titolo}</em>, {v.luogo}, {v.editore}.
               </>
             )}
           </dd>
@@ -69,7 +69,7 @@ const voci = [...bibliografia].sort(
     align-items: baseline;
     gap: 0.6rem;
   }
-  .autore {
+  .cognome {
     font-family: 'Playfair Display', serif;
     font-size: 1.3rem;
   }
