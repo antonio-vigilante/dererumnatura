@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
+import Fregio from '../components/Fregio.astro';
 import { bibliografia } from '../data/bibliografia';
 
 const cognome = (autore: string) =>
@@ -21,7 +22,7 @@ const voci = [...bibliografia].sort(
       a una voce da una guida: <code>[Autore anno](/bibliografia#chiave)</code>.
     </p>
 
-    <div class="fregio">❦</div>
+    <Fregio />
 
     <dl class="voci">
       {voci.map((v) => (

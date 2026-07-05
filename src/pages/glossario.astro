@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
+import Fregio from '../components/Fregio.astro';
 import { glossario } from '../data/glossario';
 
 const voci = [...glossario].sort((a, b) => a.termine.localeCompare(b.termine, 'it'));
@@ -29,7 +30,7 @@ const etichetteCat: Record<string, string> = {
       ))}
     </div>
 
-    <div class="fregio">❦</div>
+    <Fregio />
 
     <dl class="voci">
       {voci.map((v) => (

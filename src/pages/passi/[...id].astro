@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ColonnaVersi from '../../components/ColonnaVersi.astro';
 import Sidebar from '../../components/Sidebar.astro';
+import Fregio from '../../components/Fregio.astro';
 
 export async function getStaticPaths() {
   const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
@@ -84,7 +85,7 @@ const base = import.meta.env.BASE_URL;
       <h1>{data.titolo}</h1>
     </header>
 
-    <div class="fregio no-stampa">❦</div>
+    <Fregio class="no-stampa" />
 
     {/* ---- Schede a tab: IT / LT / Testo a fronte / Guida ---- */}
     <div class="schede" data-schede>

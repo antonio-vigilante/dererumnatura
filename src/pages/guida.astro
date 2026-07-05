@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
+import Fregio from '../components/Fregio.astro';
 ---
 
 <BaseLayout titolo="Guida all'uso" descrizione="Come inserire i testi, modificare la grafica e adattare il template del De Rerum Natura.">
@@ -21,7 +22,7 @@ import Sidebar from '../components/Sidebar.astro';
         </p>
       </header>
 
-      <div class="fregio">❦</div>
+      <Fregio />
 
 
       {/* ======================================================= PANORAMICA */}
@@ -875,7 +876,7 @@ body {
         </dl>
       </section>
 
-      <div class="fregio">❧</div>
+      <Fregio />
 
       <p class="coda tenue">
         Per qualsiasi modifica strutturale più profonda — nuove pagine, nuove

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
+import Fregio from '../components/Fregio.astro';
 
 const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
   (a, b) => a.data.ordine - b.data.ordine
@@ -24,7 +25,7 @@ const base = import.meta.env.BASE_URL;
        
       </header>
 
-      <div class="fregio">❦</div>
+      <Fregio />
 
 
       {/* ================================================ PRESENTAZIONE */}
@@ -45,7 +46,7 @@ const base = import.meta.env.BASE_URL;
 
 
 
-      <div class="fregio">❧</div>
+      <Fregio />
 
     </article>
   </div>
