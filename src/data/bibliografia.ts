@@ -12,6 +12,7 @@ export interface VoceBibliografia {
   titolo: string;
   tipo: TipoBibliografia;
   curatore?: string;
+  raccolta?: string;
   rivista?: string;
   volume?: string;
   pagine?: string;
@@ -35,7 +36,8 @@ export const bibliografia: VoceBibliografia[] = [
     anno: 1920,
     titolo: 'Le muse eraclitee in Lucrezio',
     tipo: 'capitolo',
-    curatore: 'Aa.Vv., Miscellanea di studi critici in onore di Ettore Stampini',
+    curatore: 'Aa.Vv.',
+    raccolta: 'Miscellanea di studi critici in onore di Ettore Stampini',
     pagine: '229-231',
     luogo: 'Torino-Genova',
     editore: 'Lattes & C.',
@@ -64,8 +66,8 @@ export const bibliografia: VoceBibliografia[] = [
     anno: 2020,
     titolo: 'Was Memmius a Good King?',
     tipo: 'capitolo',
-    curatore:
-      "Donncha O'Rourke (ed.), Approaches to Lucretius. Traditions and Innovations in Reading the De Rerum Natura",
+    curatore: "Donncha O'Rourke (ed.)",
+    raccolta: 'Approaches to Lucretius. Traditions and Innovations in Reading the De Rerum Natura',
     pagine: '219-240',
     luogo: 'Cambridge',
     editore: 'Cambridge University Press',
@@ -169,8 +171,8 @@ export const bibliografia: VoceBibliografia[] = [
     anno: 2007,
     titolo: 'The Empedoclean Opening',
     tipo: 'capitolo',
-    curatore:
-      'Monica R. Gale (a cura di), Oxford Readings in Classical Studies. Lucretius',
+    curatore: 'Monica R. Gale (a cura di)',
+    raccolta: 'Oxford Readings in Classical Studies. Lucretius',
     pagine: '49-87',
     luogo: 'Oxford',
     editore: 'Oxford University Press',
