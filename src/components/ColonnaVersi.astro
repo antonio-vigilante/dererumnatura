@@ -36,11 +36,15 @@ const {
   note = [],
 } = Astro.props;
 
+const base = import.meta.env.BASE_URL;
+
 // {…} opzionale all'inizio del verso: cattura l'etichetta (numero, o testo
 // libero come "15 (14)" per un verso trasposto) e il testo rimanente.
 const reMarcatore = /^\{([^}]+)\}([\s\S]*)$/;
 // [n] in un punto qualsiasi del verso: richiamo a una nota a piè di colonna.
 const reNota = /\[(\d+)\]/g;
+// [testo](url) nelle note: link in stile markdown dentro il testo HTML della nota.
+const reLink = /\[([^\]]+)\]\(([^)]+)\)/g;
 
 function conRichiami(testo: string): string {
   return testo.replace(
@@ -48,6 +52,15 @@ function conRichiami(testo: string): string {
     (_, n) =>
       `<sup class="nota-richiamo"><a href="#nota-${lingua}-${n}" id="rif-nota-${lingua}-${n}">${n}</a></sup>`
   );
+}
+
+function conLink(testo: string): string {
+  return testo.replace(reLink, (_, etichetta, href) => {
+    const url = href.startsWith('/') && !href.startsWith('//') && !href.startsWith(base)
+      ? base + href.slice(1)
+      : href;
+    return `<a href="${url}">${etichetta}</a>`;
+  });
 }
 ---
 
@@ -83,7 +96,7 @@ function conRichiami(testo: string): string {
         <a class="nota-numero" href={`#rif-nota-${lingua}-${nt.n}`} aria-label={`Torna al richiamo ${nt.n}`}>
           {nt.n}
         </a>
-        <span set:html={nt.testo} />
+        <span set:html={conLink(nt.testo)} />
       </li>
     ))}
   </ol>
@@ -97,9 +110,9 @@ function conRichiami(testo: string): string {
   }
   .verso {
     display: grid;
-    grid-template-columns: minmax(2.6rem, auto) 1fr;
+    grid-template-columns: minmax(1.6rem, auto) 1fr;
     align-items: baseline;
-    gap: 0.4rem;
+    gap: 0.3rem;
   }
   .numero {
     text-align: right;
@@ -118,8 +131,6 @@ function conRichiami(testo: string): string {
   }
   .riga {
     display: block;
-  }
-  .versi[lang='la'] .riga {
     font-size: 1.05rem;
   }
   :global(.rientro) { padding-left: 2.4rem; display: inline-block; }

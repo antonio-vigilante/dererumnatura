@@ -81,8 +81,8 @@ body {
 
 /* ---- Titoli ------------------------------------------------------------ */
 h1, h2, h3, h4 {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 700;
+  font-family: Georgia, 'Playfair Display', serif;
+  font-weight: 400;
   line-height: 1.12;
   color: var(--inchiostro);
   margin-top: 0;
@@ -139,13 +139,18 @@ a:hover {
 .barra-laterale {
   position: sticky;
   top: 5rem;
+  font-size: 0.9rem;
+}
+.barra-laterale > * + * { margin-top: 1.2rem; }
+
+.riquadro {
   padding: 1.2rem;
   border: 1.5px solid var(--linea);
   border-radius: 6px;
   background: var(--carta-alt);
-  font-size: 0.9rem;
 }
-.barra-laterale > * + * { margin-top: 1.2rem; }
+.riquadro > * + * { margin-top: 1.2rem; }
+
 @media (max-width: 800px) {
   .barra-laterale {
     position: static;
@@ -194,7 +199,7 @@ blockquote {
   margin-inline: 0;
   padding-left: 1.2rem;
   color: var(--inchiostro-tenue);
-  font-style: italic;
+  font-style: normal;
 }
 
 /* ---- Utility ----------------------------------------------------------- */

@@ -1,16 +1,23 @@
 ---
 /**
- * Barra laterale condivisa: menu del sito in cima, più eventuale
- * contenuto specifico della pagina passato via slot (es. la scheda
- * "Informazioni" nella pagina di un brano). Stile in .barra-laterale,
- * global.css.
+ * Barra laterale condivisa: un riquadro con il menu del sito, un secondo
+ * riquadro con l'eventuale contenuto specifico della pagina passato via
+ * slot (es. la scheda "Questo passo"), e il selettore del tema, che resta
+ * fuori dai riquadri. Stile in .barra-laterale / .riquadro, global.css.
  */
 import MenuSito from './MenuSito.astro';
 import SelettoreTemi from './SelettoreTemi.astro';
+const haSlot = Astro.slots.has('default');
 ---
 
 <aside class="barra-laterale no-stampa" aria-label="Menu del sito">
-  <MenuSito />
+  <div class="riquadro">
+    <MenuSito />
+  </div>
+  {haSlot && (
+    <div class="riquadro">
+      <slot />
+    </div>
+  )}
   <SelettoreTemi />
-  <slot />
 </aside>

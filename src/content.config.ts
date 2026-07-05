@@ -38,6 +38,8 @@ const passi = defineCollection({
     // Metadati editoriali facoltativi.
     fonteLatino: z.string().optional(),
     traduttore: z.string().optional(),
+    // Data dell'ultima revisione editoriale del brano, es. "2026-07-05".
+    ultimaRevisione: z.string().optional(),
     bozza: z.boolean().default(false),
     // Note a piè di colonna: nel testo (latino o italiano) si segna il punto
     // da annotare con un richiamo inline "[n]"; qui si fornisce il testo
