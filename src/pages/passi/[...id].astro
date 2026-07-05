@@ -36,7 +36,7 @@ const base = import.meta.env.BASE_URL;
     <Sidebar>
       {/* ---- Scheda informazioni sul brano ---- */}
       <div class="scheda-brano">
-        <p class="scheda-titolo maiuscoletto tenue">Informazioni</p>
+        <p class="scheda-titolo maiuscoletto tenue">Questo passo</p>
         <dl class="scheda-campi">
           <div class="scheda-riga">
             <dt>Libro</dt>
@@ -56,6 +56,12 @@ const base = import.meta.env.BASE_URL;
             <div class="scheda-riga">
               <dt>Testo latino</dt>
               <dd>{data.fonteLatino}</dd>
+            </div>
+          )}
+          {data.ultimaRevisione && (
+            <div class="scheda-riga">
+              <dt>Ultima revisione</dt>
+              <dd>{data.ultimaRevisione}</dd>
             </div>
           )}
         </dl>
