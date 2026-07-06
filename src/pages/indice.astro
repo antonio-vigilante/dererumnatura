@@ -42,21 +42,15 @@ const temiOrdinati = [...perTema.keys()].sort();
   <div class="contenitore layout-menu">
     <Sidebar />
     <div class="indice colonna-testo">
-    <h1>Indice dell'opera</h1>
-    <p class="tenue introd">
-      Il <em>De Rerum Natura</em> si articola in sei libri, a coppie tematiche
-      (fisica, antropologia, cosmologia). Qui trovi i brani presenti nell'edizione,
-      ordinati per libro e per tema.
-    </p>
-
+    <h1>Indice</h1>
+ 
     <Fregio />
 
     {[...perLibro.entries()].map(([n, elenco]) => (
       <section class="libro" id={`libro-${n}`}>
         <h2 class="titolo-libro">
-          <span class="num maiuscoletto">Liber {libri[n - 1]}</span>
-          <span class="etichetta-libro tenue">{titoliLibri[n - 1]}</span>
-        </h2>
+          <span class="num maiuscoletto">Libro {libri[n - 1]}</span>
+                  </h2>
         <ol class="passi-libro">
           {elenco.map((p) => (
             <li>
