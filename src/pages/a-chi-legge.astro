@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Fregio from '../components/Fregio.astro';
+---
+
+<BaseLayout titolo="A chi legge" descrizione="Nota del traduttore: perché tradurre ancora Lucrezio, e perché farlo in endecasillabi.">
+  <div class="contenitore layout-menu">
+    <Sidebar />
+
+    <article class="corpo colonna-testo">
+      <h1>A chi legge</h1>
+
+      <Fregio />
+
+      <h2>Questa traduzione</h2>
+
+      <p>
+        Lucrezio è tra gli autori latini più tradotti, letti e amati ancora oggi.
+        Poeta, filosofo e scienziato, per quanto lo consentiva il suo tempo, ha
+        tra i suoi traduttori, oltre ai latinisti, poeti, filosofi e scienziati.
+        Perché tradurlo ancora? E perché farlo in endecasillabi?
+      </p>
+
+      <p>
+        Alla prima domanda risponderò in modo epicureo: per semplice
+        <em>voluptas</em>, il piacere non solo di tradurre – e certo tradurre è
+        uno dei piaceri della vita – ma anche di entrare come solo una
+        traduzione consente in un testo-mondo che porta l'io occidentale ad un
+        punto di tensione raramente eguagliato nel mondo antico. A ciò aggiungo
+        che, se esistono molte traduzioni, in versi e in prosa, non esiste una
+        traduzione recente che sia interamente ad accesso aperto, ossia tale
+        che si possa liberamente leggere, distribuire e modificare. E rendere
+        <em>aperto</em> un poema classico, non solo con l'atto di tradurre, che
+        è sempre pratica di apertura, ma anche con la scelta di una licenza
+        aperta, è un piacere non meno tangibile.
+      </p>
+
+      <p>
+        Perché in endecasillabi? Almeno due ragioni sconsiglierebbero oggi di
+        tradurre Lucrezio ricorrendo al verso classico della nostra tradizione.
+        La prima è che la mutata sensibilità porta a preferire, e a sentire più
+        vicine, forme più libere, che sono proprie, con poche eccezioni, della
+        poesia degli ultimi decenni. La seconda è che adottare il verso libero,
+        o la prosa, consente una più facile aderenza al testo, che può
+        risultare problematica quando occorre rispettare una metrica fissa.
+      </p>
+
+      <p>
+        E perché, allora? Si potrebbe rispondere che esistono ormai molte
+        traduzioni in verso libero e, se non sono tutte ugualmente valide, ve
+        ne sono molte di validissime. Ma la ragione è un'altra. Sono convinto
+        della bellezza dell'endecasillabo, e mi piace poter rendere la bellezza
+        di Lucrezio con la bellezza dell'endecasillabo. Tutto qui.
+      </p>
+
+      <p>
+        Quanto allo stile, ho cercato di tradurre nel modo più fedele e chiaro
+        possibile, consentendo al lettore di accedere al pensiero di Lucrezio,
+        oltre che alla sua poesia. Non ho nemmeno provato a riprodurre lo stile
+        arcaizzante lucreziano, sia perché questo avrebbe condotto, con ogni
+        probabilità, ad esiti più ridicoli che credibili, sia perché per
+        leggere una traduzione italiana in endecasillabi con linguaggio
+        arcaizzante il lettore di oggi può ricorrere semplicemente alle belle
+        versioni di Mario Rapisardi<sup class="nota-richiamo"><a href="#nota-1" id="rif-nota-1">1</a></sup>
+        o di Camillo Giussani<sup class="nota-richiamo"><a href="#nota-2" id="rif-nota-2">2</a></sup>.
+        Qualche licenza mi sono concesso nei passi in cui il poeta fa aggio, per
+        così dire, sul filosofo (ammesso che in Lucrezio si possa distinguere
+        il poeta dal filosofo); ma mai, comunque, stravolgendo il significato
+        del testo.
+      </p>
+
+      <p>
+        Il testo latino su cui è condotta la traduzione, e che è riportato, è
+        quello dell'edizione critica di Cyril Bailey; nella traduzione ho
+        tenuto conto anche delle edizioni di Munro, Giussani e Deufert. La
+        <em>Guida alla lettura</em> non vuole essere un commento puntuale
+        dell'opera, ma accompagnare chi legge nella comprensione soprattutto da
+        un punto di vista filosofico e argomentativo.
+      </p>
+
+      <p>
+        Affido questo lavoro alla lettrice e al lettore con l'invito a
+        mettervi le mani: correggano pure, modifichino, riscrivano, con le
+        uniche limitazioni della licenza Creative Commons BY-SA.
+      </p>
+
+      <Fregio />
+
+      <ol class="note-pagina">
+        <li id="nota-1">
+          <a href="#rif-nota-1" class="nota-numero" aria-label="Torna al richiamo 1">1</a>
+          <em>La Natura libri VI tradotti da Mario Rapisardi</em>, Gaetano
+          Brigola e Comp., Milano 1880.
+        </li>
+        <li id="nota-2">
+          <a href="#rif-nota-2" class="nota-numero" aria-label="Torna al richiamo 2">2</a>
+          Tito Lucrezio Caro, <em>La Natura</em>, versione di Camillo
+          Giussani, Mondadori, Milano 1939.
+        </li>
+      </ol>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  h1 { text-align: center; }
+
+  .corpo p { margin: 1.1rem 0; }
+
+  :global(.nota-richiamo) {
+    font-size: 0.7em;
+    line-height: 0;
+  }
+  :global(.nota-richiamo a) {
+    text-decoration: none;
+    color: var(--rubrica);
+    padding: 0 0.1em;
+  }
+
+  .note-pagina {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    font-size: 0.9rem;
+    color: var(--inchiostro-tenue);
+  }
+  .note-pagina li {
+    margin: 0.5rem 0;
+    padding-left: 1.6rem;
+    text-indent: -1.6rem;
+    scroll-margin-top: 5rem;
+  }
+  .nota-numero {
+    display: inline-block;
+    width: 1.4rem;
+    text-decoration: none;
+    color: var(--rubrica);
+    font-weight: 600;
+  }
+</style>
