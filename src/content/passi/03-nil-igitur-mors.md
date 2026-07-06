@@ -3,7 +3,7 @@ libro: 3
 titolo: "La morte non è nulla per noi"
 versi: "830-842"
 versoIniziale: 830
-ordine: 3
+ordine: 25
 sommario: "La grande consolazione epicurea: se l'anima è mortale, la morte non ci riguarda."
 temi: ["mortalitas animi", "metus morti", "ataraxia"]
 traduttore: "traduzione di servizio, in prosa ritmica"

@@ -3,7 +3,7 @@ libro: 2
 titolo: "Suave, mari magno"
 versi: "1-19"
 versoIniziale: 1
-ordine: 2
+ordine: 24
 sommario: "Il proemio del II libro: la serenità del saggio di fronte agli affanni umani."
 temi: ["ataraxia", "sapientia", "voluptas", "proemio"]
 traduttore: "traduzione di servizio, in prosa ritmica"
