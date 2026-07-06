@@ -19,6 +19,8 @@ for (const p of passi) {
   }
 }
 const temiOrdinati = [...perTema.keys()].sort();
+
+const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 ---
 
 <BaseLayout titolo="Indice tematico">
@@ -39,7 +41,9 @@ const temiOrdinati = [...perTema.keys()].sort();
               {perTema.get(t)!.map((p, i) => (
                 <>
                   {i > 0 && <span class="sep">·</span>}
-                  <a href={`${base}passi/${p.id}/`}>{p.data.titolo}</a>
+                  <a href={`${base}passi/${p.id}/`} title={p.data.titolo}>
+                    {libri[p.data.libro - 1]}, vv. {p.data.versi}
+                  </a>
                 </>
               ))}
             </dd>
