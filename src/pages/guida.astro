@@ -16,9 +16,8 @@ import Fregio from '../components/Fregio.astro';
         <p class="occhiello maiuscoletto tenue">Documentazione editoriale</p>
         <h1>Guida all'uso del template</h1>
         <p class="intro">
-          Questa pagina spiega come inserire nuovi brani, come formattare i versi,
-          come aggiungere voci al glossario e come adattare la grafica alle esigenze
-          della tua edizione.
+          Questa pagina spiega come inserire nuovi brani, come formattare i versi
+          e come adattare la grafica alle esigenze della tua edizione.
         </p>
       </header>
 
@@ -82,17 +81,14 @@ import Fregio from '../components/Fregio.astro';
 │   │       ├── 02-suave-mari-magno.md
 │   │       └── …
 │   │
-│   ├── data/
-│   │   └── glossario.ts        ← LE VOCI DEL GLOSSARIO
-│   │
 │   ├── pages/
-│   │   ├── index.astro         ← Frontespizio
-│   │   ├── indice.astro        ← Indice per libro + temi
-│   │   ├── glossario.astro     ← Pagina glossario
-│   │   ├── cerca.astro         ← Ricerca
-│   │   ├── guida.astro         ← Questa pagina
-│   │   └── passi/[...id].astro ← Template pagina brano (non modificare
-│   │                              a meno che tu non voglia cambiare il layout)
+│   │   ├── index.astro           ← Frontespizio
+│   │   ├── indice.astro          ← Il poema: elenco per libro
+│   │   ├── indice-tematico.astro ← Indice tematico (concordanza)
+│   │   ├── cerca.astro           ← Ricerca
+│   │   ├── guida.astro           ← Questa pagina
+│   │   └── passi/[...id].astro   ← Template pagina brano (non modificare
+│   │                                a meno che tu non voglia cambiare il layout)
 │   │
 │   ├── styles/
 │   │   └── global.css          ← COLORI, FONT, TEMI DI LETTURA
@@ -108,8 +104,7 @@ import Fregio from '../components/Fregio.astro';
 └── astro.config.mjs            ← Configurazione Astro (url del sito, ecc.)`}</code></pre>
         <p>
           Per la maggior parte del lavoro editoriale tocchi <strong>solo</strong>
-          la cartella <code>src/content/passi/</code> e il file
-          <code>src/data/glossario.ts</code>.
+          la cartella <code>src/content/passi/</code>.
         </p>
       </section>
 
@@ -549,8 +544,8 @@ Nota l'anafora di *te… te… tibi…*...
           <dt><code>[testo](url)</code></dt>
           <dd>
             Link interni al sito, es.{' '}
-            <code>[clinamen](/glossario/#clinamen)</code> per rimandare
-            a una voce del glossario.
+            <code>[ataraxia](/indice-tematico/#tema-ataraxia)</code> per
+            rimandare a una voce dell'indice tematico.
           </dd>
 
           <dt><code>- elemento</code> / <code>1. elemento</code></dt>
@@ -566,76 +561,14 @@ Nota l'anafora di *te… te… tibi…*...
       </section>
 
 
-      {/* ===================================================== GLOSSARIO */}
-      <section id="glossario">
-        <h2>Il Glossario</h2>
-        <p>
-          Le voci del glossario sono definite nel file
-          <code>src/data/glossario.ts</code>. Non è un file di contenuto Markdown
-          ma un file TypeScript con un array di oggetti: questo permette al sito
-          di filtrare, ordinare e collegare le voci in modo affidabile.
-        </p>
-
-        <h3>Struttura di una voce</h3>
-        <pre><code>{`{
-  termine: 'Clinamen',          // nome della voce (obbligatorio)
-  greco: 'παρέγκλισις',         // termine greco originale (facoltativo)
-  latino: 'clinamen, declinatio', // rese latine nel poema (facoltativo)
-  categoria: 'fisica',          // fisica | etica | gnoseologia | teologia
-  definizione:
-    'La deviazione minima e imprevedibile...',  // testo (obbligatorio)
-},`}</code></pre>
-
-        <h3>Aggiungere una voce</h3>
-        <p>
-          Apri <code>src/data/glossario.ts</code> e aggiungi un oggetto
-          all'array <code>glossario</code>. Le voci vengono ordinate
-          alfabeticamente in automatico dalla pagina del glossario;
-          non preoccuparti dell'ordine nell'array.
-        </p>
-        <pre><code>{`export const glossario: VoceGlossario[] = [
-  // …voci esistenti…
-  {
-    termine: 'Tetrafarmaco',
-    greco: 'τετραφάρμακος',
-    categoria: 'etica',
-    definizione:
-      'La "quadrupla medicina" epicurea: non temere gli dèi, ' +
-      'non temere la morte, il bene è facile da procurare, ' +
-      'il male è facile da sopportare.',
-  },
-];`}</code></pre>
-
-        <h3>Collegare un brano a una voce</h3>
-        <p>
-          Usa il campo <code>temi</code> nel frontmatter del brano per collegarlo
-          all'indice tematico. Se vuoi anche rimandare alla voce di glossario
-          dalla guida alla lettura, inserisci un link Markdown:
-        </p>
-        <pre><code>{`Il concetto di [voluptas](/glossario/#voluptas) apre e chiude il poema.`}</code></pre>
-        <p>
-          L'àncora <code>#voluptas</code> funziona se la voce nel glossario ha
-          <code>termine: 'Voluptas'</code> — la pagina del glossario genera
-          automaticamente l'ID dalla stringa normalizzata (attenzione alle
-          maiuscole: usa l'ID in minuscolo nell'URL).
-        </p>
-        <div class="nota">
-          <strong>Nota tecnica:</strong> le àncone del glossario non sono ancora
-          generate automaticamente come ID. Se hai bisogno di link diretti alle
-          voci, aggiungi <code>id={`{termine.toLowerCase()}`}</code> ai
-          <code>&lt;div class="voce"&gt;</code> in <code>glossario.astro</code>.
-        </div>
-      </section>
-
-
       {/* ====================================================== IND. TEMI */}
       <section id="temi">
         <h2>L'indice tematico</h2>
         <p>
-          L'indice tematico (pagina <code>/indice/</code>, sezione inferiore)
-          si costruisce automaticamente dai campi <code>temi</code> di tutti i
-          brani pubblicati. Non c'è una lista centralizzata di temi: ogni tema
-          esiste dal momento in cui appare nel frontmatter di almeno un brano.
+          L'indice tematico (pagina <code>/indice-tematico/</code>) si costruisce
+          automaticamente dai campi <code>temi</code> di tutti i brani pubblicati.
+          Non c'è una lista centralizzata di temi: ogni tema esiste dal momento
+          in cui appare nel frontmatter di almeno un brano.
         </p>
 
         <h3>Consigli per una buona concordanza</h3>
@@ -651,7 +584,7 @@ Nota l'anafora di *te… te… tibi…*...
             le categorie più ampie (<code>proemio</code>, <code>cosmologia</code>).
           </li>
           <li>
-            Ogni tema diventa un link navigabile: <code>/indice/#tema-ataraxia</code>.
+            Ogni tema diventa un link navigabile: <code>/indice-tematico/#tema-ataraxia</code>.
             Puoi usare questi link nelle guide per collegare i brani tra loro.
           </li>
         </ul>

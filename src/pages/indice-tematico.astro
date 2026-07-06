@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Fregio from '../components/Fregio.astro';
+
+const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
+  (a, b) => a.data.ordine - b.data.ordine
+);
+const base = import.meta.env.BASE_URL;
+
+// Indice tematico (concordanza).
+const perTema = new Map<string, typeof passi>();
+for (const p of passi) {
+  for (const t of p.data.temi) {
+    const arr = perTema.get(t) ?? [];
+    arr.push(p);
+    perTema.set(t, arr);
+  }
+}
+const temiOrdinati = [...perTema.keys()].sort();
+---
+
+<BaseLayout titolo="Indice tematico">
+  <div class="contenitore layout-menu">
+    <Sidebar />
+    <div class="indice-tematico colonna-testo">
+    <h1>Indice tematico</h1>
+
+    <Fregio />
+
+    <section class="concordanza">
+      <p class="tenue introd">I nuclei concettuali dell'epicureismo lucreziano, con i brani che li trattano.</p>
+      <dl class="temi-elenco">
+        {temiOrdinati.map((t) => (
+          <div class="tema-riga" id={`tema-${t}`}>
+            <dt class="maiuscoletto">{t}</dt>
+            <dd>
+              {perTema.get(t)!.map((p, i) => (
+                <>
+                  {i > 0 && <span class="sep">·</span>}
+                  <a href={`${base}passi/${p.id}/`}>{p.data.titolo}</a>
+                </>
+              ))}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  h1 { text-align: center; }
+  .introd { text-align: center; font-size: 1.05rem; }
+
+  .temi-elenco { margin-top: 1rem; }
+  .tema-riga {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dotted var(--linea);
+    scroll-margin-top: 5rem;
+  }
+  .tema-riga:target { background: var(--evidenzia); border-radius: 4px; }
+  dt { color: var(--rubrica); letter-spacing: 0.05em; }
+  dd { margin: 0; }
+  dd a { text-decoration: none; }
+  .sep { color: var(--inchiostro-tenue); margin: 0 0.4rem; }
+  @media (max-width: 560px) {
+    .tema-riga { grid-template-columns: 1fr; gap: 0.2rem; }
+  }
+</style>

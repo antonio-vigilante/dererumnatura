@@ -8,12 +8,11 @@ const base = import.meta.env.BASE_URL;
 const percorso = '/' + Astro.url.pathname.slice(base.length);
 const voci = [
   { href: '/', etichetta: 'Frontespizio' },
-  { href: '/indice/', etichetta: 'Indice' },
-  { href: '/glossario/', etichetta: 'Glossario' },
+  { href: '/indice/', etichetta: 'Il poema' },
+  { href: '/indice-tematico/', etichetta: 'Indice tematico' },
   { href: '/bibliografia/', etichetta: 'Bibliografia' },
   { href: '/cerca/', etichetta: 'Cerca' },
-  { href: '/guida/', etichetta: 'Guida' },
-];
+  ];
 const attiva = (href: string) =>
   href === '/' ? percorso === '/' : percorso.startsWith(href);
 ---

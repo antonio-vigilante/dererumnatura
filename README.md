@@ -23,13 +23,12 @@ src/
 ├── components/           # Header, Footer, ColonnaVersi (versi + numerazione)
 ├── layouts/BaseLayout    # scheletro HTML, temi, testata/piè di pagina
 ├── pages/
-│   ├── index.astro       # frontespizio + sommario dei brani
-│   ├── passi/[...id]     # pagina del brano con le schede a tab
-│   ├── indice.astro      # indice per libro + indice tematico (concordanza)
-│   ├── glossario.astro   # glossario dei concetti epicurei (filtrabile)
-│   └── cerca.astro       # ricerca client-side (accenti-insensibile)
-├── data/glossario.ts     # voci del glossario
-└── styles/global.css     # estetica umanistica + 3 temi di lettura
+│   ├── index.astro            # frontespizio + sommario dei brani
+│   ├── passi/[...id]          # pagina del brano con le schede a tab
+│   ├── indice.astro           # il poema: indice per libro
+│   ├── indice-tematico.astro  # indice tematico (concordanza)
+│   └── cerca.astro            # ricerca client-side (accenti-insensibile)
+└── styles/global.css          # estetica umanistica + 3 temi di lettura
 ```
 
 ## Aggiungere un brano
@@ -70,8 +69,8 @@ Imposta `bozza: true` per escludere un brano dalla pubblicazione.
 | Schede Latino / Traduzione / Guida / Testo a fronte | pagina del brano; le frecce ←→ scorrono i tab; l'ancora `#guida` apre il tab |
 | Numerazione dei versi | automatica, ogni 5 versi |
 | Navigazione prev/next tra i brani | fondo pagina del brano |
-| Indice per libro + indice tematico | `/indice` |
-| Glossario epicureo filtrabile | `/glossario` |
+| Il poema: indice per libro | `/indice` |
+| Indice tematico (concordanza) | `/indice-tematico` |
 | Ricerca full-text (latino, traduzione, guide, temi) | `/cerca`, anche via `?q=` |
 | Temi di lettura: papiro / sepia / notte | selettore nella testata, salvato in `localStorage` |
 | Foglio di stile per la stampa | in stampa esce il testo a fronte |
@@ -82,7 +81,6 @@ Imposta `bozza: true` per escludere un brano dalla pubblicazione.
 - **Font**: importati da Google Fonts in `global.css` (Cormorant Garamond + EB
   Garamond). Per un sito offline, sostituiscili con font auto-ospitati.
 - **Titoli dei libri**: in `src/pages/indice.astro` (`titoliLibri`).
-- **Voci del glossario**: `src/data/glossario.ts`.
 
 ## Idee di sviluppo
 
