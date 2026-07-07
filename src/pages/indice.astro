@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import Fregio from '../components/Fregio.astro';
+import IndicePagina from '../components/IndicePagina.astro';
 
 const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
   (a, b) => a.data.ordine - b.data.ordine
@@ -29,7 +30,9 @@ for (const p of passi) {
 
 <BaseLayout titolo="Il poema">
   <div class="contenitore layout-menu">
-    <Sidebar />
+    <Sidebar>
+      <IndicePagina selettore=".indice" livelli="h2" />
+    </Sidebar>
     <div class="indice colonna-testo">
     <h1>Il poema</h1>
 

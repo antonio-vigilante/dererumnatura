@@ -2,12 +2,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import Fregio from '../components/Fregio.astro';
+import IndicePagina from '../components/IndicePagina.astro';
 ---
 
 <BaseLayout titolo="Guida all'uso" descrizione="Come inserire i testi, modificare la grafica e adattare il template del De Rerum Natura.">
   <div class="contenitore layout-menu">
 
-    <Sidebar />
+    <Sidebar>
+      <IndicePagina selettore=".corpo" />
+    </Sidebar>
 
     {/* ---- Corpo della guida ---- */}
     <article class="corpo">

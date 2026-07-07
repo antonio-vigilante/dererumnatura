@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import Fregio from '../components/Fregio.astro';
+import IndicePagina from '../components/IndicePagina.astro';
 import { bibliografia, sezioniBibliografia } from '../data/bibliografia';
 
 // Particelle che, se precedono l'ultima parola del nome, fanno parte del
@@ -30,7 +31,9 @@ const sezioni = sezioniBibliografia
 
 <BaseLayout titolo="Bibliografia">
   <div class="contenitore layout-menu">
-    <Sidebar />
+    <Sidebar>
+      <IndicePagina selettore=".bibliografia" livelli="h2" />
+    </Sidebar>
     <div class="bibliografia colonna-testo">
     <h1>Bibliografia</h1>
     

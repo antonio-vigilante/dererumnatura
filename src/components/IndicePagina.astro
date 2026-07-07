@@ -1,0 +1,97 @@
+---
+/**
+ * Indice della pagina per la sidebar: elenco di link alle intestazioni
+ * (h2, h3...) trovate dentro `selettore`. Le voci si generano a runtime
+ * scandendo il DOM, così l'indice resta sempre allineato al contenuto senza
+ * bisogno di mantenerlo a mano. Va passato come figlio di <Sidebar>, che lo
+ * racchiude nel suo .riquadro (vedi Sidebar.astro).
+ */
+export interface Props {
+  /** Selettore CSS del contenitore le cui intestazioni vanno indicizzate. */
+  selettore: string;
+  /** Selettore delle intestazioni da includere. Default: 'h2, h3'. */
+  livelli?: string;
+  titolo?: string;
+}
+
+const { selettore, livelli = 'h2, h3', titolo = 'Indice' } = Astro.props;
+---
+
+<div class="scheda-indice" data-indice-pagina={selettore} data-livelli={livelli}>
+  <p class="scheda-titolo maiuscoletto tenue">{titolo}</p>
+  <nav class="indice-elenco" aria-label={`${titolo} della pagina`}></nav>
+</div>
+
+<script>
+  function generaSlug(testo: string): string {
+    return testo
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-+|-+$)/g, '') || 'sezione';
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-indice-pagina]').forEach((scheda) => {
+    const selettore = scheda.dataset.indicePagina!;
+    const livelli = scheda.dataset.livelli || 'h2, h3';
+    const contenitore = document.querySelector(selettore);
+    const nav = scheda.querySelector('.indice-elenco');
+    if (!contenitore || !nav) { scheda.remove(); return; }
+
+    const intestazioni = Array.from(contenitore.querySelectorAll<HTMLElement>(livelli));
+    if (intestazioni.length === 0) { scheda.remove(); return; }
+
+    const usati = new Set<string>();
+    for (const h of intestazioni) {
+      if (!h.id) {
+        const slug = generaSlug(h.textContent || '');
+        let unico = slug;
+        let n = 2;
+        while (document.getElementById(unico) || usati.has(unico)) unico = `${slug}-${n++}`;
+        h.id = unico;
+      }
+      usati.add(h.id);
+      // Evita che l'header fisso in cima alla pagina copra l'intestazione
+      // quando si arriva da un link diretto (stesso criterio delle sezioni
+      // già presenti nelle pagine: vedi .sezione / .libro / .tema-riga).
+      if (getComputedStyle(h).scrollMarginTop === '0px') h.style.scrollMarginTop = '5.5rem';
+
+      const link = document.createElement('a');
+      link.href = `#${h.id}`;
+      link.textContent = (h.textContent || '').trim().replace(/\s+/g, ' ');
+      link.className = `indice-livello-${h.tagName.toLowerCase()}`;
+      nav.appendChild(link);
+    }
+  });
+</script>
+
+<style>
+  .scheda-indice { font-size: 0.9rem; }
+  .scheda-titolo { margin: 0 0 0.6rem; font-size: 0.72rem; }
+
+  .indice-elenco {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  /* I link sono creati a runtime dallo script, quindi non ricevono
+     l'attributo di scoping di Astro: senza :global() queste regole non
+     corrisponderebbero mai e resterebbero gli stili globali di <a>. */
+  .indice-elenco :global(a) {
+    display: block;
+    color: var(--inchiostro-tenue);
+    text-decoration: none;
+    line-height: 1.3;
+    border-radius: 4px;
+    padding: 0.1rem 0.3rem;
+    margin: 0 -0.3rem;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .indice-elenco :global(a:hover) { color: var(--inchiostro); background: var(--evidenzia); }
+
+  .indice-elenco :global(.indice-livello-h3) {
+    padding-left: 0.9rem;
+    font-size: 0.85em;
+  }
+</style>
