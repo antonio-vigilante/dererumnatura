@@ -25,7 +25,7 @@ const base = import.meta.env.BASE_URL;
 <BaseLayout titolo="Cerca">
   <div class="contenitore layout-menu">
     <Sidebar />
-    <div class="cerca colonna-testo">
+    <div class="cerca">
     <h1>Cerca nel poema</h1>
         </p>
 
@@ -109,6 +109,7 @@ const base = import.meta.env.BASE_URL;
 </script>
 
 <style>
+  .cerca { max-width: 52rem; }
   h1 { text-align: center; }
   .introd { text-align: center; }
   .campo { margin: 1.5rem 0 0.5rem; }
