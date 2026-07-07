@@ -2,14 +2,30 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import Fregio from '../components/Fregio.astro';
-import { bibliografia } from '../data/bibliografia';
+import { bibliografia, sezioniBibliografia } from '../data/bibliografia';
 
-const cognome = (autore: string) =>
-  autore.replace(/\s*\([^)]*\)\s*$/, '').trim().split(/\s+/).pop()!;
+// Particelle che, se precedono l'ultima parola del nome, fanno parte del
+// cognome (es. "Milo De Angelis" → cognome "De Angelis", non "Angelis").
+const PARTICELLE_COGNOME = ['de', 'di', 'da', 'del', 'della', 'van', 'von', 'le', 'la'];
 
-const voci = [...bibliografia].sort(
-  (a, b) => cognome(a.autore).localeCompare(cognome(b.autore), 'it') || a.anno - b.anno
-);
+const cognome = (autore: string) => {
+  const parole = autore.replace(/\s*\([^)]*\)\s*$/, '').trim().split(/\s+/);
+  const ultima = parole.pop()!;
+  const penultima = parole[parole.length - 1];
+  if (penultima && PARTICELLE_COGNOME.includes(penultima.toLowerCase())) {
+    return `${penultima} ${ultima}`;
+  }
+  return ultima;
+};
+
+const ordinaVoci = (voci: typeof bibliografia) =>
+  [...voci].sort(
+    (a, b) => cognome(a.autore).localeCompare(cognome(b.autore), 'it') || a.anno - b.anno
+  );
+
+const sezioni = sezioniBibliografia
+  .map((s) => ({ ...s, voci: ordinaVoci(bibliografia.filter((v) => v.sezione === s.chiave)) }))
+  .filter((s) => s.voci.length > 0);
 ---
 
 <BaseLayout titolo="Bibliografia">
@@ -21,31 +37,38 @@ const voci = [...bibliografia].sort(
 
     <Fregio />
 
-    <dl class="voci">
-      {voci.map((v) => (
-        <div class="voce" id={v.chiave}>
-          <dt>
-            <span class="cognome">{cognome(v.autore)}</span>
-            <span class="anno rubrica">{v.anno}</span>
-          </dt>
-          <dd>
-            {v.autore}{v.tipo === 'articolo' ? (
-              <>, <em>{v.titolo}</em>, {v.rivista}
-                {v.volume && ` ${v.volume}`}
-                {v.pagine && `, pp. ${v.pagine}`}.
-              </>
-            ) : v.tipo === 'capitolo' ? (
-              <>, «{v.titolo}», in {v.curatore}, <em>{v.raccolta}</em>
-                {v.pagine && `, pp. ${v.pagine}`}, {v.luogo}, {v.editore}.
-              </>
-            ) : (
-              <>, <em>{v.titolo}</em>, {v.luogo}, {v.editore}.
-              </>
-            )}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    {sezioni.map((s) => (
+      <section class="sezione" id={`sez-${s.chiave}`}>
+        <h2 class="titolo-sezione">{s.etichetta}</h2>
+        <dl class="voci">
+          {s.voci.map((v) => (
+            <div class="voce" id={v.chiave}>
+              <dt>
+                <span class="cognome">{cognome(v.autore)}</span>
+                <span class="anno rubrica">{v.anno}</span>
+              </dt>
+              <dd>
+                {v.autore}{v.tipo === 'articolo' ? (
+                  <>, <em>{v.titolo}</em>, {v.rivista}
+                    {v.volume && ` ${v.volume}`}
+                    {v.pagine && `, pp. ${v.pagine}`}.
+                  </>
+                ) : v.tipo === 'capitolo' ? (
+                  <>, «{v.titolo}», in {v.curatore}, <em>{v.raccolta}</em>
+                    {v.pagine && `, pp. ${v.pagine}`}, {v.luogo}, {v.editore}.
+                  </>
+                ) : (
+                  <>, <em>{v.titolo}</em>{v.curatore && `, a cura di ${v.curatore}`}, {v.luogo}, {v.editore}
+                    {v.volume && `, ${v.volume}`}
+                    {v.nota && ` (${v.nota})`}.
+                  </>
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    ))}
     </div>
   </div>
 </BaseLayout>
@@ -54,6 +77,13 @@ const voci = [...bibliografia].sort(
   h1 { text-align: center; }
   .introd { text-align: center; font-size: 1.05rem; }
   .introd code { font-size: 0.9em; }
+
+  .sezione { scroll-margin-top: 5rem; }
+  .sezione + .sezione { margin-top: 2.5rem; }
+  .titolo-sezione {
+    border-bottom: 2px solid var(--linea);
+    padding-bottom: 0.4rem;
+  }
 
   .voci { margin: 0; }
   .voce {
