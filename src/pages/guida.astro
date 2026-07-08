@@ -594,6 +594,65 @@ Nota l'anafora di *te… te… tibi…*...
       </section>
 
 
+      {/* =============================================== IND. NOMI/LUOGHI */}
+      <section id="nomi-e-luoghi">
+        <h2>L'indice dei nomi e dei luoghi</h2>
+        <p>
+          A differenza dell'indice tematico, che rimanda all'intero brano,
+          l'indice dei nomi e dei luoghi (pagina <code>/indice-nomi-luoghi/</code>)
+          rimanda al <strong>verso esatto</strong> in cui compare un nome proprio
+          o un toponimo. Richiede due cose: un <strong>marcatore</strong> nel
+          verso e una <strong>voce registrata</strong> in un file dati.
+        </p>
+
+        <h3>1. Registra il nome in <code>src/data/nomi-luoghi.ts</code></h3>
+        <p>
+          Ogni voce ha una <code>chiave</code> univoca minuscola, una
+          <code>etichetta</code> (la forma mostrata nell'indice) e un
+          <code>tipo</code> (<code>persona</code>, <code>divinita</code>,
+          <code>luogo</code> o <code>popolo</code>):
+        </p>
+        <pre><code>{`export const nomiLuoghi: VoceNome[] = [
+  { chiave: 'venere', etichetta: 'Venere', tipo: 'divinita' },
+  { chiave: 'memmio', etichetta: 'Memmio', tipo: 'persona' },
+  { chiave: 'ida', etichetta: 'Ida (monte)', tipo: 'luogo' },
+];`}</code></pre>
+        <p>
+          Se un verso usa una chiave non registrata qui, la build si interrompe
+          con un errore che indica il file e il verso incriminati — non può
+          succedere silenziosamente, a differenza di un link scritto a mano
+          verso una voce inesistente.
+        </p>
+
+        <h3>2. Marca l'occorrenza nel verso</h3>
+        <p>
+          Usa <code>[[Testo]]</code> quando la parola nel verso coincide, a
+          meno di maiuscole/minuscole, con la <code>chiave</code> registrata.
+          Usa <code>[[Testo|chiave]]</code> quando la forma nel verso è diversa
+          — tipicamente un caso latino declinato:
+        </p>
+        <pre><code>{`latino:
+  - "[[Veneris|venere]] genetrix, hominum divumque voluptas,"
+
+italiano:
+  - "O madre degli Eneadi, o benefica [[Venere]]"`}</code></pre>
+        <p>
+          Il marcatore non è visibile nel testo pubblicato: resta solo
+          "Testo". Puoi marcare più nomi nello stesso verso, e la stessa
+          occorrenza può comparire sia nel latino sia nell'italiano — nell'indice
+          appariranno come due rimandi distinti (<code>lat.</code> / <code>it.</code>),
+          ciascuno al proprio verso.
+        </p>
+
+        <div class="nota">
+          <strong>Marcare non è obbligatorio ovunque:</strong> a differenza
+          delle note, non serve segnare ogni occorrenza di un nome — solo quelle
+          che vuoi rendere raggiungibili dall'indice. Un'edizione può iniziare
+          marcando pochi passi chiave ed estendersi nel tempo.
+        </div>
+      </section>
+
+
       {/* ====================================================== GRAFICA */}
       <section id="grafica">
         <h2>Personalizzare la grafica</h2>

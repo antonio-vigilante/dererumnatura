@@ -1,0 +1,140 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Fregio from '../components/Fregio.astro';
+import { nomiLuoghi, categorieNomi } from '../data/nomi-luoghi';
+
+const passi = (await getCollection('passi', ({ data }) => !data.bozza)).sort(
+  (a, b) => a.data.ordine - b.data.ordine
+);
+const base = import.meta.env.BASE_URL;
+const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+
+// [[Testo]] o [[Testo|chiave]]: stesso marcatore letto da ColonnaVersi.astro.
+const reNome = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+
+interface Occorrenza {
+  passo: CollectionEntry<'passi'>;
+  lingua: 'la' | 'it';
+  n: number;
+}
+
+const perChiave = new Map<string, Occorrenza[]>();
+
+function scandisci(
+  versi: string[],
+  lingua: 'la' | 'it',
+  versoIniziale: number,
+  passo: CollectionEntry<'passi'>
+) {
+  versi.forEach((riga, i) => {
+    const n = versoIniziale + i;
+    for (const match of riga.matchAll(reNome)) {
+      const chiave = (match[2] ?? match[1]).trim().toLowerCase();
+      if (!nomiLuoghi.some((v) => v.chiave === chiave)) {
+        throw new Error(
+          `Indice dei nomi e dei luoghi: la chiave "${chiave}" usata in ` +
+          `${passo.id} (${lingua}, v. ${n}) non è registrata in src/data/nomi-luoghi.ts`
+        );
+      }
+      const arr = perChiave.get(chiave) ?? [];
+      arr.push({ passo, lingua, n });
+      perChiave.set(chiave, arr);
+    }
+  });
+}
+
+for (const passo of passi) {
+  scandisci(passo.data.latino, 'la', passo.data.versoIniziale, passo);
+  scandisci(passo.data.italiano, 'it', passo.data.versoInizialeIt ?? 1, passo);
+}
+
+const perCategoria = categorieNomi
+  .map((cat) => ({
+    ...cat,
+    voci: nomiLuoghi
+      .filter((v) => v.tipo === cat.chiave && perChiave.has(v.chiave))
+      .sort((a, b) => a.etichetta.localeCompare(b.etichetta, 'it')),
+  }))
+  .filter((cat) => cat.voci.length > 0);
+---
+
+<BaseLayout titolo="Indice dei nomi e dei luoghi">
+  <div class="contenitore layout-menu">
+    <Sidebar />
+    <div class="indice-nomi colonna-testo">
+      <h1>Indice dei nomi e dei luoghi</h1>
+
+      <Fregio />
+
+      <p class="tenue introd">
+        Persone, divinità, popoli e luoghi citati nel poema, con il rimando al verso esatto.
+      </p>
+
+      {perCategoria.map((cat) => (
+        <section class="categoria">
+          <h2>{cat.etichetta}</h2>
+          <dl class="nomi-elenco">
+            {cat.voci.map((v) => (
+              <div class="nome-riga" id={`nome-${v.chiave}`}>
+                <dt>
+                  {v.etichetta}
+                  {v.nota && <span class="nota-nome tenue"> — {v.nota}</span>}
+                </dt>
+                <dd>
+                  {perChiave
+                    .get(v.chiave)!
+                    .sort((a, b) => a.passo.data.ordine - b.passo.data.ordine || a.n - b.n)
+                    .map((occ, i) => (
+                      <>
+                        {i > 0 && <span class="sep">·</span>}
+                        <a
+                          href={`${base}passi/${occ.passo.id}/#v-${occ.lingua}-${occ.n}`}
+                          title={occ.passo.data.titolo}
+                        >
+                          {libri[occ.passo.data.libro - 1]}, v. {occ.n} {occ.lingua === 'la' ? '(lat.)' : '(it.)'}
+                        </a>
+                      </>
+                    ))}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  h1 { text-align: center; }
+  .introd { text-align: center; font-size: 1.05rem; }
+
+  .categoria { margin-top: 2rem; }
+  .categoria h2 {
+    font-size: 1.1rem;
+    color: var(--rubrica);
+    border-bottom: 1.5px solid var(--linea);
+    padding-bottom: 0.4rem;
+  }
+
+  .nomi-elenco { margin-top: 0.5rem; }
+  .nome-riga {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dotted var(--linea);
+    scroll-margin-top: 5rem;
+  }
+  .nome-riga:target { background: var(--evidenzia); border-radius: 4px; }
+  dt { letter-spacing: 0.03em; }
+  .nota-nome { font-size: 0.85rem; }
+  dd { margin: 0; }
+  dd a { text-decoration: none; }
+  .sep { color: var(--inchiostro-tenue); margin: 0 0.4rem; }
+  @media (max-width: 560px) {
+    .nome-riga { grid-template-columns: 1fr; gap: 0.2rem; }
+  }
+</style>

@@ -18,6 +18,17 @@
  * Note a piè di colonna — un richiamo inline [n] in un punto qualsiasi del verso
  *   diventa un apice cliccabile che rimanda alla nota corrispondente, elencata
  *   in fondo alla colonna (prop `note`, filtrata per lingua dal chiamante).
+ *
+ * Nomi e luoghi — un marcatore inline [[Testo]] o [[Testo|chiave]] in un punto
+ *   qualsiasi del verso segnala un nome proprio o un luogo per l'Indice dei
+ *   nomi e dei luoghi (vedi src/data/nomi-luoghi.ts e indice-nomi-luoghi.astro).
+ *   Nel testo visualizzato resta solo "Testo": il marcatore non è visibile.
+ *
+ * Ancore per verso — quando `ancore` è vero, ogni verso riceve un id
+ *   `v-<lingua>-<numero>` per collegamenti diretti (usato dall'Indice dei nomi
+ *   e dei luoghi). Va attivato solo su una copia di ogni verso per pagina, per
+ *   evitare id duplicati (es. non sulla vista "Testo a fronte", che ripete gli
+ *   stessi versi già presenti nelle schede IT/LT).
  */
 interface Props {
   versi: string[];
@@ -26,6 +37,7 @@ interface Props {
   classe?: string;
   mostraNumeri?: boolean;
   note?: { n: number; testo: string }[];
+  ancore?: boolean;
 }
 const {
   versi,
@@ -34,6 +46,7 @@ const {
   classe = '',
   mostraNumeri = true,
   note = [],
+  ancore = false,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -43,6 +56,8 @@ const base = import.meta.env.BASE_URL;
 const reMarcatore = /^\{([^}]+)\}([\s\S]*)$/;
 // [n] in un punto qualsiasi del verso: richiamo a una nota a piè di colonna.
 const reNota = /\[(\d+)\]/g;
+// [[Testo]] o [[Testo|chiave]]: marcatore per l'indice dei nomi e dei luoghi.
+const reNome = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g;
 // [testo](url) nelle note: link in stile markdown dentro il testo HTML della nota.
 const reLink = /\[([^\]]+)\]\(([^)]+)\)/g;
 
@@ -52,6 +67,10 @@ function conRichiami(testo: string): string {
     (_, n) =>
       `<sup class="nota-richiamo"><a href="#nota-${lingua}-${n}" id="rif-nota-${lingua}-${n}">${n}</a></sup>`
   );
+}
+
+function conNomi(testo: string): string {
+  return testo.replace(reNome, (_, testoMostrato) => testoMostrato);
 }
 
 function conLink(testo: string): string {
@@ -68,7 +87,7 @@ function conLink(testo: string): string {
   {versi.map((riga, i) => {
     const match = riga.match(reMarcatore);
     const marcatore: string | null = match ? match[1] : null;
-    const testo = conRichiami(match ? match[2].trimStart() : riga);
+    const testo = conRichiami(conNomi(match ? match[2].trimStart() : riga));
 
     const n = versoIniziale + i;
     // Latino: numero automatico ogni 5 versi, salvo marcatore esplicito
@@ -79,7 +98,10 @@ function conLink(testo: string): string {
       : marcatore;
 
     return (
-      <li class:list={['verso', { 'ref-latino': !mostraNumeri && marcatore !== null }]}>
+      <li
+        id={ancore ? `v-${lingua}-${n}` : undefined}
+        class:list={['verso', { 'ref-latino': !mostraNumeri && marcatore !== null }]}
+      >
         <span class="numero" aria-hidden="true">
           {numeroMargine ?? ''}
         </span>
@@ -113,7 +135,14 @@ function conLink(testo: string): string {
     grid-template-columns: minmax(2.2rem, auto) 1fr;
     align-items: baseline;
     gap: 0.3rem;
+    scroll-margin-top: 5rem;
   }
+  /* :target da solo non basta: raggiungendo un verso da un'altra pagina
+     (es. l'Indice dei nomi e dei luoghi) lo script che attiva la scheda
+     IT/LT riscrive l'hash con il nome del tab, e l'URL smette di puntare
+     al verso. La classe "evidenziato" (aggiunta via JS) copre quel caso. */
+  .verso:target,
+  .verso.evidenziato { background: var(--evidenzia); border-radius: 4px; }
   .numero {
     text-align: right;
     font-size: 0.78rem;

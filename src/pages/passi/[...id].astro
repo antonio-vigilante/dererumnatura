@@ -106,12 +106,13 @@ const base = import.meta.env.BASE_URL;
           mostraNumeri={data.versoInizialeIt !== undefined}
           lingua="it"
           note={noteItaliano}
+          ancore
         />
         {data.traduttore && <p class="credito tenue">Traduzione: {data.traduttore}</p>}
       </div>
 
       <div class="pannello colonna-testo" id="pan-latino" role="tabpanel" aria-labelledby="tab-latino" hidden>
-        <ColonnaVersi versi={data.latino} versoIniziale={data.versoIniziale} lingua="la" note={noteLatino} />
+        <ColonnaVersi versi={data.latino} versoIniziale={data.versoIniziale} lingua="la" note={noteLatino} ancore />
         {data.fonteLatino && <p class="credito tenue">Testo latino: {data.fonteLatino}</p>}
       </div>
 
@@ -201,6 +202,20 @@ const base = import.meta.env.BASE_URL;
       const bottoneIniziale = gruppo.querySelector(`[data-tab="${iniziale}"]`);
       if (['latino', 'italiano', 'guida', 'fronte'].includes(iniziale) && bottoneIniziale?.offsetParent !== null) {
         attiva(iniziale);
+      }
+
+      // Ancora a un verso specifico (#v-it-15 o #v-la-234), es. dall'Indice
+      // dei nomi e dei luoghi: attiva la scheda giusta e scorre fino al verso,
+      // anche se il pannello era nascosto al caricamento. Va salvato l'id
+      // PRIMA di chiamare attiva(), che riscrive location.hash con il nome
+      // del tab (es. "#latino") e farebbe perdere il riferimento al verso.
+      const versoMatch = location.hash.match(/^#(v-(it|la)-\d+)$/);
+      if (versoMatch) {
+        const idVerso = versoMatch[1];
+        attiva(versoMatch[2] === 'it' ? 'italiano' : 'latino');
+        const elVerso = document.getElementById(idVerso);
+        elVerso?.scrollIntoView({ block: 'center' });
+        elVerso?.classList.add('evidenziato');
       }
     });
   })();
