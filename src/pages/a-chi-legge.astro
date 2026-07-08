@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import Fregio from '../components/Fregio.astro';
+
+const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout titolo="A chi legge" descrizione="Nota del traduttore: perché tradurre ancora Lucrezio, e perché farlo in endecasillabi.">
@@ -60,8 +62,8 @@ import Fregio from '../components/Fregio.astro';
         probabilità, ad esiti più ridicoli che credibili, sia perché per
         leggere una traduzione italiana in endecasillabi con linguaggio
         arcaizzante il lettore di oggi può ricorrere semplicemente alle belle
-        versioni di Mario Rapisardi<sup class="nota-richiamo"><a href="#nota-1" id="rif-nota-1">1</a></sup>
-        o di Camillo Giussani<sup class="nota-richiamo"><a href="#nota-2" id="rif-nota-2">2</a></sup>.
+        versioni di Mario Rapisardi (<a href={`${base}bibliografia/#rapisardi1880`}>Rapisardi 1880</a>)
+        o di Camillo Giussani (<a href={`${base}bibliografia/#giussani1949`}>Giussani 1949</a>).
         Qualche licenza mi sono concesso nei passi in cui il poeta fa aggio, per
         così dire, sul filosofo (ammesso che in Lucrezio si possa distinguere
         il poeta dal filosofo); ma mai, comunque, stravolgendo il significato

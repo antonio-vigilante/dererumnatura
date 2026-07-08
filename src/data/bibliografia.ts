@@ -105,6 +105,17 @@ export const bibliografia: VoceBibliografia[] = [
     nota: 'endecasillabi',
   },
   {
+    chiave: 'rapisardi1880',
+    autore: 'Mario Rapisardi',
+    anno: 1880,
+    titolo: 'La Natura libri VI',
+    tipo: 'libro',
+    sezione: 'traduzioni-it',
+    luogo: 'Milano',
+    editore: 'Gaetano Brigola e Comp.',
+    nota: 'endecasillabi',
+  },
+  {
     chiave: 'giussani1949',
     autore: 'Camillo Giussani',
     anno: 1949,
