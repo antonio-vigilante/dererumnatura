@@ -29,4 +29,6 @@ export const nomiLuoghi: VoceNome[] = [
   { chiave: 'venere', etichetta: 'Venere', tipo: 'divinita' },
   { chiave: 'marte', etichetta: 'Marte', tipo: 'divinita' },
   { chiave: 'memmio', etichetta: 'Memmio', tipo: 'persona' },
+  { chiave: 'romani', etichetta: 'Romani', tipo: 'popolo' },
+
 ];
