@@ -15,6 +15,12 @@
  * Il marcatore {…} può contenere qualunque testo, non solo un numero, per
  * annotazioni come "15 (14)" nei casi di inversione dell'ordine dei versi.
  *
+ * Versi aggiuntivi (es. "{43a}") — un marcatore numero+lettera senza spazi
+ *   segnala un verso interpolato che non fa parte della numerazione
+ *   tradizionale (es. un verso citato da un'altra fonte e inserito in una
+ *   lacuna). Questi versi non fanno avanzare il conteggio automatico, così
+ *   i versi successivi mantengono la numerazione corretta.
+ *
  * Note a piè di colonna — un richiamo inline [n] in un punto qualsiasi del verso
  *   diventa un apice cliccabile che rimanda alla nota corrispondente, elencata
  *   in fondo alla colonna (prop `note`, filtrata per lingua dal chiamante).
@@ -60,6 +66,9 @@ const reNota = /\[(\d+)\]/g;
 const reNome = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g;
 // [testo](url) nelle note: link in stile markdown dentro il testo HTML della nota.
 const reLink = /\[([^\]]+)\]\(([^)]+)\)/g;
+// Marcatore di verso aggiuntivo non numerato (es. "43a"): numero+lettera,
+// senza spazi né parentesi, a differenza di "15 (14)" o "5".
+const reVersoAggiuntivo = /^\d+[a-zA-Z]$/;
 
 function conRichiami(testo: string): string {
   return testo.replace(
@@ -84,31 +93,38 @@ function conLink(testo: string): string {
 ---
 
 <ol class:list={['versi', classe]} lang={lingua} start={versoIniziale}>
-  {versi.map((riga, i) => {
-    const match = riga.match(reMarcatore);
-    const marcatore: string | null = match ? match[1] : null;
-    const testo = conRichiami(conNomi(match ? match[2].trimStart() : riga));
+  {(() => {
+    let versoAuto = versoIniziale - 1;
+    return versi.map((riga, i) => {
+      const match = riga.match(reMarcatore);
+      const marcatore: string | null = match ? match[1] : null;
+      const testo = conRichiami(conNomi(match ? match[2].trimStart() : riga));
 
-    const n = versoIniziale + i;
-    // Latino: numero automatico ogni 5 versi, salvo marcatore esplicito
-    // (es. verso trasposto: "{15 (14)}").
-    // Italiano: numero editoriale solo sui versi contrassegnati con {…}.
-    const numeroMargine: string | number | null = mostraNumeri
-      ? (marcatore ?? (n % 5 === 0 ? n : null))
-      : marcatore;
+      // Un verso aggiuntivo (es. "{43a}") non fa avanzare la numerazione:
+      // i versi successivi restano allineati alla numerazione tradizionale.
+      const versoAggiuntivo = marcatore !== null && reVersoAggiuntivo.test(marcatore.trim());
+      if (!versoAggiuntivo) versoAuto += 1;
+      const n = versoAuto;
+      // Latino: numero automatico ogni 5 versi, salvo marcatore esplicito
+      // (es. verso trasposto: "{15 (14)}").
+      // Italiano: numero editoriale solo sui versi contrassegnati con {…}.
+      const numeroMargine: string | number | null = mostraNumeri
+        ? (marcatore ?? (n % 5 === 0 ? n : null))
+        : marcatore;
 
-    return (
-      <li
-        id={ancore ? `v-${lingua}-${n}` : undefined}
-        class:list={['verso', { 'ref-latino': !mostraNumeri && marcatore !== null }]}
-      >
-        <span class="numero" aria-hidden="true">
-          {numeroMargine ?? ''}
-        </span>
-        <span class="riga" set:html={testo || '&nbsp;'} />
-      </li>
-    );
-  })}
+      return (
+        <li
+          id={ancore ? `v-${lingua}-${versoAggiuntivo ? marcatore : n}` : undefined}
+          class:list={['verso', { 'ref-latino': !mostraNumeri && marcatore !== null }]}
+        >
+          <span class="numero" aria-hidden="true">
+            {numeroMargine ?? ''}
+          </span>
+          <span class="riga" set:html={testo || '&nbsp;'} />
+        </li>
+      );
+    });
+  })()}
 </ol>
 
 {note.length > 0 && (
