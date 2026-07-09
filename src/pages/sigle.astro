@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Fregio from '../components/Fregio.astro';
+
+const sigle = [
+  { sigla: 'G', descrizione: 'Schedae Gottorpienses' },
+  { sigla: 'O', descrizione: 'Codice Oblungus' },
+  { sigla: 'O¹', descrizione: 'Codice Oblungus corretto dal copista Dungal' },
+  { sigla: 'Q', descrizione: 'Codice Quadratus' },
+  { sigla: 'U', descrizione: 'Schedae Vindobonenses posteriores' },
+  { sigla: 'V', descrizione: 'Schedae Vindobonenses priores' },
+];
+---
+
+<BaseLayout titolo="Sigle" descrizione="Sigle dei codici manoscritti latini citati nelle note al testo del De Rerum Natura.">
+  <div class="contenitore layout-menu">
+    <Sidebar />
+
+    <article class="corpo colonna-testo">
+      <h1>Sigle</h1>
+
+      <Fregio />
+
+      <p>
+        Le sigle che seguono indicano i codici manoscritti citati nelle note
+        al testo latino.
+      </p>
+
+      <dl class="sigle">
+        {sigle.map((s) => (
+          <div class="voce">
+            <dt>{s.sigla}</dt>
+            <dd>{s.descrizione}</dd>
+          </div>
+        ))}
+      </dl>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  h1 { text-align: center; }
+  .corpo p { margin: 1.1rem 0; }
+
+  .sigle { margin: 1.5rem 0 0; }
+  .voce {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0.6rem;
+    padding: 0.6rem 0;
+    border-bottom: 1.5px solid var(--linea);
+  }
+  dt {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  dd { margin: 0; }
+</style>
