@@ -61,6 +61,19 @@ export const bibliografia: VoceBibliografia[] = [
     editore: 'Deighton Bell and Co.',
     volume: '2 voll',
   },
+
+  {
+    chiave: 'mencius1985',
+    autore: 'Mencius',
+    anno: 1985,
+    titolo: 'The Works of Mencius',
+    tipo: 'libro',
+    sezione: 'opere',
+    luogo: 'Oxford',
+    editore: 'Clarendon',
+   },
+
+
   {
     chiave: 'giussani1896',
     autore: 'Carlo Giussani',
