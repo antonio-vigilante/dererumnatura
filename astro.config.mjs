@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-const base = '/dererumnatura/';
+const base = '/';
 
 /**
  * I link interni scritti nel markdown (es. `[Giancotti 1950](/bibliografia#giancotti1950)`)
@@ -25,7 +25,7 @@ function correggiLinkBase() {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://antonio-vigilante.github.io',
+  site: 'https://lucrezio.pages.dev',
   base,
   markdown: {
     shikiConfig: {
