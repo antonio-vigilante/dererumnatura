@@ -450,7 +450,7 @@ export const bibliografia: VoceBibliografia[] = [
       "Roman Agamemnon. Political Echoes in the Proem to Lucretius' De rerum natura",
     tipo: 'articolo',
     sezione: 'studi',
-    rivista: '«Mnemosyne»',
+    rivista: 'Mnemosyne',
     pagine: '1–23',
   },
   {
@@ -486,4 +486,32 @@ export const bibliografia: VoceBibliografia[] = [
     luogo: 'Paris',
     editore: 'Fayard',
   },
+
+{
+  chiave: 'filodemo2023',
+  autore: 'Filodemo di Gadara',
+  anno: 2023,
+  titolo: 'De signis. Sui fenomeni e sulle inferenze semiotiche',
+  tipo: 'libro',
+  sezione: 'opere',
+  luogo: 'Pisa',
+  editore: 'ETS',
+  curatore: 'Giovanni Manetti e Daniela Fausti',
+},
+
+{
+  chiave: 'odifreddi2013b',
+  autore: 'Piergiorgio Odifreddi',
+  anno: 2013,
+  titolo: 'La Scienza di Lucrezio',
+  tipo: 'articolo',
+  sezione: 'studi',
+  rivista: "Le Scienze",
+  volume: 'Numero 541',
+  pagine: '20', 
+},
+
+
 ];
+
+
