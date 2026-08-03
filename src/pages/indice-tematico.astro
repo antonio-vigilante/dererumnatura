@@ -18,7 +18,7 @@ for (const p of passi) {
     perTema.set(t, arr);
   }
 }
-const temiOrdinati = [...perTema.keys()].sort();
+const temiOrdinati = [...perTema.keys()].sort((a, b) => a.localeCompare(b, 'it', { sensitivity: 'base' }));
 
 const libri = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 ---
