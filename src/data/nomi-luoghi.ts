@@ -55,4 +55,13 @@ export const nomiLuoghi: VoceNome[] = [
   { chiave: 'nettuno', etichetta: 'Nettuno', tipo: 'divinita' },
   { chiave: 'melibea', etichetta: 'Melibea', tipo: 'luogo' },
   { chiave: 'tessalia', etichetta: 'Tessalia', tipo: 'luogo' },
+  { chiave: 'cibele', etichetta: 'Cibele (Grande Madre)', tipo: 'divinita' },
+  { chiave: 'giove', etichetta: 'Giove', tipo: 'divinita' },
+  { chiave: 'saturno', etichetta: 'Saturno', tipo: 'divinita' },
+  { chiave: 'cerere', etichetta: 'Cerere', tipo: 'divinita' },
+  { chiave: 'bacco', etichetta: 'Bacco', tipo: 'divinita' },
+  { chiave: 'cureti', etichetta: 'Cureti', tipo: 'divinita' },
+  { chiave: 'galli', etichetta: 'Galli', tipo: 'popolo', nota: 'sacerdoti della Grande Madre' },
+  { chiave: 'ida', etichetta: 'Ida', tipo: 'luogo' },
+  { chiave: 'creta', etichetta: 'Creta', tipo: 'luogo' },
 ];

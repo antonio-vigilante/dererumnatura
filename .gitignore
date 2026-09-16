@@ -1,6 +1,7 @@
 # build output
 dist/
 .output/
+pdf/
 
 # dependencies
 node_modules/

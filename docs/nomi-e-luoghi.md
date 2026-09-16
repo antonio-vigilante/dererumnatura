@@ -1,4 +1,4 @@
-# Indice dei nomi e dei luoghi — guida rapida
+–# Indice dei nomi e dei luoghi — guida rapida
 
 Rimanda al **verso esatto** in cui compare un nome proprio o un luogo
 (a differenza dell'indice tematico, che rimanda all'intero brano).

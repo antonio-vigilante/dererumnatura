@@ -1,13 +1,19 @@
 ---
-const anno = new Date().getFullYear();
+const mesiIt = [
+  'gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno',
+  'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre',
+];
+const oggi = new Date();
+const dataAggiornamento = `${oggi.getDate()} ${mesiIt[oggi.getMonth()]} ${oggi.getFullYear()}`;
 const base = import.meta.env.BASE_URL;
 ---
 
 <footer class="sito no-stampa">
   <div class="contenitore">
-    
+
     <p class="colophon tenue">
-     Licenza Creative Commons BY-SA 4.0. Ultimo aggiornamento: luglio 2026.
+     Licenza Creative Commons BY-SA 4.0. Ultimo aggiornamento: {dataAggiornamento}.
+    </p>
   </div>
 </footer>
 
