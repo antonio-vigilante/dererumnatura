@@ -50,11 +50,19 @@ for (const passo of passi) {
   scandisci(passo.data.italiano, 'it', passo.data.versoInizialeIt ?? 1, passo);
 }
 
+// Nell'Indice si linka solo il testo latino: i versi italiani non
+// corrispondono uno a uno a quelli latini, quindi la loro posizione
+// ordinale nel passo non è un riferimento di verso affidabile. Le
+// occorrenze italiane restano scandite sopra solo per validare le chiavi.
+function occorrenzeLatino(chiave: string): Occorrenza[] {
+  return (perChiave.get(chiave) ?? []).filter((occ) => occ.lingua === 'la');
+}
+
 const perCategoria = categorieNomi
   .map((cat) => ({
     ...cat,
     voci: nomiLuoghi
-      .filter((v) => v.tipo === cat.chiave && perChiave.has(v.chiave))
+      .filter((v) => v.tipo === cat.chiave && occorrenzeLatino(v.chiave).length > 0)
       .sort((a, b) => a.etichetta.localeCompare(b.etichetta, 'it')),
   }))
   .filter((cat) => cat.voci.length > 0);
@@ -69,7 +77,7 @@ const perCategoria = categorieNomi
       <Fregio />
 
       <p class="tenue introd">
-        Persone, divinità, popoli e luoghi citati nel poema, con il rimando al verso esatto.
+        Persone, divinità, popoli e luoghi citati nel poema. I riferimenti sono al testo latino.
       </p>
 
       {perCategoria.map((cat) => (
@@ -83,8 +91,7 @@ const perCategoria = categorieNomi
                   {v.nota && <span class="nota-nome tenue"> — {v.nota}</span>}
                 </dt>
                 <dd>
-                  {perChiave
-                    .get(v.chiave)!
+                  {occorrenzeLatino(v.chiave)
                     .sort((a, b) => a.passo.data.ordine - b.passo.data.ordine || a.n - b.n)
                     .map((occ, i) => (
                       <>
@@ -93,7 +100,7 @@ const perCategoria = categorieNomi
                           href={`${base}passi/${occ.passo.id}/#v-${occ.lingua}-${occ.n}`}
                           title={occ.passo.data.titolo}
                         >
-                          {libri[occ.passo.data.libro - 1]}, v. {occ.n} {occ.lingua === 'la' ? '(lat.)' : '(it.)'}
+                          {libri[occ.passo.data.libro - 1]}, v. {occ.n}
                         </a>
                       </>
                     ))}
