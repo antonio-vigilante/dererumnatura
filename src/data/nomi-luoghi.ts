@@ -9,13 +9,14 @@
  * altrimenti si usa `[[Testo|chiave]]`, per forme diverse come un caso
  * latino declinato (es. `[[Veneris|venere]]`).
  */
-export type CategoriaNome = 'persona' | 'divinita' | 'luogo' | 'popolo';
+export type CategoriaNome = 'persona' | 'divinita' | 'luogo' | 'popolo' | 'creatura';
 
 export const categorieNomi: { chiave: CategoriaNome; etichetta: string }[] = [
   { chiave: 'persona', etichetta: 'Persone' },
   { chiave: 'divinita', etichetta: 'Divinità' },
   { chiave: 'luogo', etichetta: 'Luoghi' },
   { chiave: 'popolo', etichetta: 'Popoli' },
+  { chiave: 'creatura', etichetta: 'Creature mitologiche' },
 ];
 
 export interface VoceNome {
@@ -74,4 +75,5 @@ export const nomiLuoghi: VoceNome[] = [
   { chiave: 'elicona', etichetta: 'Elicona', tipo: 'luogo' },
   { chiave: 'aulide', etichetta: 'Aulide', tipo: 'luogo' },
   { chiave: 'india', etichetta: 'India', tipo: 'luogo' },
+  { chiave: 'chimera', etichetta: 'Chimera', tipo: 'creatura', nota: 'mostro ibrido dal respiro di fiamma' },
 ];
