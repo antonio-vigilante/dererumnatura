@@ -24,6 +24,9 @@ export const sezioniBibliografia: { chiave: SezioneBibliografia; etichetta: stri
 export interface VoceBibliografia {
   chiave: string;
   autore: string;
+  // Forma usata nella chiave e nell'ordinamento quando non coincide con
+  // l'ultima parola del nome (es. "Filodemo di Gadara" → "Filodemo").
+  cognome?: string;
   anno: number;
   titolo: string;
   tipo: TipoBibliografia;
@@ -454,6 +457,16 @@ export const bibliografia: VoceBibliografia[] = [
     pagine: '1–23',
   },
   {
+    chiave: 'rover2025',
+    autore: 'Chiara Rover',
+    anno: 2025,
+    titolo: 'Lucrezio e il criterio di verità epicureo',
+    tipo: 'libro',
+    sezione: 'studi',
+    luogo: 'Berlin/Boston',
+    editore: 'De Gruyter',
+  },
+  {
     chiave: 'sedley2007',
     autore: 'David Sedley',
     anno: 2007,
@@ -490,6 +503,7 @@ export const bibliografia: VoceBibliografia[] = [
 {
   chiave: 'filodemo2023',
   autore: 'Filodemo di Gadara',
+  cognome: 'Filodemo',
   anno: 2023,
   titolo: 'De signis. Sui fenomeni e sulle inferenze semiotiche',
   tipo: 'libro',
