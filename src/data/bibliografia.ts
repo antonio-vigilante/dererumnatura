@@ -415,6 +415,16 @@ export const bibliografia: VoceBibliografia[] = [
     editore: 'Oxford University Press',
   },
   {
+    chiave: 'neumann1875',
+    autore: 'Friedrich Neumann',
+    anno: 1875,
+    titolo: 'De interpolationibus Lucretianis',
+    tipo: 'libro',
+    sezione: 'studi',
+    luogo: 'Halle',
+    editore: 'Diss. inaug.',
+  },
+  {
     chiave: 'nichols1976',
     autore: 'James H. Nichols',
     anno: 1976,

@@ -21,7 +21,14 @@ const cognome = (autore: string) => {
 
 const cognomeVoce = (v: (typeof bibliografia)[number]) => v.cognome ?? cognome(v.autore);
 
-const ordinaVoci = (voci: typeof bibliografia) =>
+// Evita il doppio punto quando l'ultimo elemento di un libro termina già
+// con un'abbreviazione (es. editore "Diss. inaug.").
+const puntoFinale = (v: (typeof bibliografia)[number]) => {
+  const ultimo = v.nota ? ')' : (v.volume ?? v.editore ?? '');
+  return ultimo.endsWith('.') ? '' : '.';
+};
+
+const ordinaVoci =(voci: typeof bibliografia) =>
   [...voci].sort(
     (a, b) => cognomeVoce(a).localeCompare(cognomeVoce(b), 'it') || a.anno - b.anno
   );
@@ -49,8 +56,7 @@ const sezioni = sezioniBibliografia
           {s.voci.map((v) => (
             <div class="voce" id={v.chiave}>
               <dt class="rubrica">
-                <span class="cognome">{cognomeVoce(v)}</span>
-                <span class="anno">{v.anno}</span>
+                <span class="cognome">{cognomeVoce(v)}</span>{' '}<span class="anno">{v.anno}</span>
               </dt>
               <dd>
                 {v.autore}{v.tipo === 'articolo' ? (
@@ -65,7 +71,7 @@ const sezioni = sezioniBibliografia
                 ) : (
                   <>, <em>{v.titolo}</em>{v.curatore && `, a cura di ${v.curatore}`}, {v.luogo}, {v.editore}
                     {v.volume && `, ${v.volume}`}
-                    {v.nota && ` (${v.nota})`}.
+                    {v.nota && ` (${v.nota})`}{puntoFinale(v)}
                   </>
                 )}
               </dd>
@@ -90,18 +96,19 @@ const sezioni = sezioniBibliografia
     padding-bottom: 0.4rem;
   }
 
-  .voci { margin: 0; }
+  .voci { margin: 1rem 0 0; }
+  /* Voce compatta: rubrica e citazione sulla stessa riga, con rientro
+     sporgente perché le righe successive restino allineate sotto il testo. */
   .voce {
-    padding: 1.1rem 0;
-    border-bottom: 1.5px solid var(--linea);
+    padding: 0.2rem 0.4rem 0.2rem 1.6em;
+    text-indent: -1.2em;
+    line-height: 1.45;
+    border-radius: 4px;
     scroll-margin-top: 5rem;
   }
+  .voce + .voce { margin-top: 0.35rem; }
   .voce:target { background: var(--evidenzia); }
-  dt {
-    display: flex;
-    align-items: baseline;
-    gap: 0.3em;
-  }
+  dt, dd { display: inline; margin: 0; }
+  dt { font-weight: 600; margin-right: 0.5em; }
   .anno { font-variant-numeric: tabular-nums; }
-  dd { margin: 0.4rem 0 0; }
 </style>
